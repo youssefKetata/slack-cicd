@@ -45,8 +45,9 @@ __DateNight
 old-teammates.text
 
 # ENV DEV
-/mongo-data
-/jenkins_home
+./env-dev/mongo-data
+./supspace-client/.next
+
 
 # OPS
 ./ops/push.sh
