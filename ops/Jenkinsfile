@@ -1,0 +1,133 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build and run dev') {
+            environment {
+                SRV_PORT=4000
+                MONGO_URI="app_db_1:27017/db?authSource=admin"
+                MONGO_PORT=27017
+                MONGO_INITDB_ROOT_USERNAME = credentials('MONGO_INITDB_ROOT_USERNAME')
+                MONGO_INITDB_ROOT_PASSWORD = credentials('MONGO_INITDB_ROOT_PASSWORD_DEV')
+                NODE_ENV="development"
+            }
+            steps {
+                echo "Branch: ${GIT_BRANCH}    Commit: ${GIT_COMMIT}"
+                echo "Jenkins node: ${NODE_NAME}    Build tag: ${BUILD_TAG}"
+                echo "Jenkins workspace: ${WORKSPACE}"
+                dir("./app") {
+                    // Build and start dev
+                    sh 'docker-compose -f docker-compose.dev.yml up -d --build'
+                }
+            }
+        }
+        stage('Unit tests') {
+            steps {
+                // run Jest tests
+                sh 'docker exec app_client_1 npm test'
+            }
+            post { // clean-up dev
+                always {
+                    dir("./app") {
+                        sh 'docker-compose -f docker-compose.dev.yml down'
+                        sh 'docker rmi client'
+                        sh 'docker rmi server'
+                    }
+                }
+            }
+        }
+        stage('Build and run staging') {
+            environment {
+                SRV_PORT=4000
+                MONGO_URI="app_db_1:27017/db?authSource=admin"
+                MONGO_PORT=27017
+                MONGO_INITDB_ROOT_USERNAME = credentials('MONGO_INITDB_ROOT_USERNAME')
+                MONGO_INITDB_ROOT_PASSWORD = credentials('MONGO_INITDB_ROOT_PASSWORD_STAGING')
+                NODE_ENV="production"
+            }
+            steps {
+                dir("./app") {
+                    sh 'docker-compose -f docker-compose.staging.yml up -d --build'
+                    // sh 'sleep 120' // wait for DB to be ready (to be replaced with container status check)
+                }
+            }
+        }
+        stage('Integration tests') {
+            steps {
+                // Tests if app client reaches the backend and gets data from the database
+                sh './ops/tests/integration.sh'
+            }
+            post {
+                always {
+                    // Stop staging environment 
+                    dir("./app") {
+                        sh 'docker-compose -f docker-compose.staging.yml down'
+                    }
+                }
+                failure {
+                    // // If tests fail, remove failed staging images
+                    sh 'docker rmi client'
+                    sh 'docker rmi server'
+                }
+            }
+        }
+        stage('Push images to Registry') {
+            steps {
+                // tag images
+                sh "docker image tag client localhost:5000/client_${GIT_COMMIT}"
+                sh "docker image tag server localhost:5000/server_${GIT_COMMIT}"
+                sh "docker image tag mongo localhost:5000/db_${GIT_COMMIT}"
+                // push images
+                sh "docker push localhost:5000/client_${GIT_COMMIT}"
+                sh "docker push localhost:5000/server_${GIT_COMMIT}"
+                sh "docker push localhost:5000/db_${GIT_COMMIT}"
+            }
+            post {
+                always {
+                    // remove local images
+                    sh "docker rmi localhost:5000/client_${GIT_COMMIT}"
+                    sh "docker rmi localhost:5000/server_${GIT_COMMIT}"
+                    sh "docker rmi localhost:5000/db_${GIT_COMMIT}"
+                    sh "docker rmi client"
+                    sh "docker rmi server"
+                    sh "docker rmi mongo"
+                }
+            }
+        }
+        stage('Deploy to prod') {
+            environment {
+                SRV_PORT=4000
+                MONGO_URI="prod_db:27017/db?authSource=admin"
+                MONGO_PORT=27017
+                MONGO_INITDB_ROOT_USERNAME = credentials('MONGO_INITDB_ROOT_USERNAME')
+                MONGO_INITDB_ROOT_PASSWORD = credentials('MONGO_INITDB_ROOT_PASSWORD_PROD')
+                NODE_ENV="production"
+            }
+            when {
+                branch 'master'
+            }
+            steps {
+                dir("./app") {
+                     // Rolling update to production (waits for update to finish)
+                    sh 'docker service update --image localhost:5000/client_${GIT_COMMIT} prod_client'
+                    sh 'docker service update --image localhost:5000/server_${GIT_COMMIT} --env-add MONGO_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@${MONGO_URI} --env-add PORT=${SRV_PORT} --env-add NODE_ENV=${NODE_ENV} prod_server'
+                    sh 'docker service update --image localhost:5000/db_${GIT_COMMIT} --env-add MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME} --env-add MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD} prod_db'
+                }
+            }
+        }
+        stage('Smoke tests and roll-back if needed') {
+            when {
+                branch 'master'
+            }
+            steps {
+                sh "curl 'http://prod_client:8080'"
+            }
+            post {
+                failure {
+                    sh "docker service rollback prod_client"
+                    sh "docker service rollback prod_server"
+                    sh "docker service rollback prod_db"
+                }
+            }
+        }
+    }
+}
