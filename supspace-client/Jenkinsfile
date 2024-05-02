@@ -1,0 +1,49 @@
+pipeline {
+    agent none
+    stages {
+        stage('TESTING PHASE') {
+            agent any
+            steps {
+                script {
+                    echo 'Testing Phase'
+                    echo "Branch Name: ${BRANCH_NAME}"
+                    sh 'npm run test'
+                }
+            }
+        }
+        stage('BUILD PHASE') {
+            agent any
+            when {
+                expression {
+                    BRANCH_NAME == "main"
+                }
+            }
+            steps {
+                script {
+                    echo 'Build Phase: Building...'
+                }
+            }
+        }
+        stage('DEPLOYMENT PHASE') {
+            agent any
+            when {
+                expression {
+                    BRANCH_NAME == "main"
+                }
+            }
+            steps {
+                script {
+                    echo 'Deployment Phase'
+                }
+            }
+        }
+    }
+    post {
+        success {
+      echo 'Pipeline completed successfully!'
+        }
+        failure {
+      echo 'Pipeline failed.'
+        }
+    }
+}
