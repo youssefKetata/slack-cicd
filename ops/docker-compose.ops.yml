@@ -13,7 +13,7 @@ services:
       - jenkins:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock # Share the host  docker socket with the container
     networks:
-      - overlay_network
+      - ops_overlay_network
       - default
 
   prometheus:
@@ -31,7 +31,7 @@ services:
     depends_on:
       - cadvisor
     networks:
-      - overlay_network
+      - ops_overlay_network
       - default
   
   grafana:
@@ -45,7 +45,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=grafanasecret
       - GF_USERS_ALLOW_SIGN_UP=false
     networks:
-      - overlay_network
+      - ops_overlay_network
       - default
    
   cadvisor:
@@ -61,5 +61,6 @@ services:
 volumes:
   jenkins: {}
 networks:
-  overlay_network:
+  ops_overlay_network:
+    external: true
   default:

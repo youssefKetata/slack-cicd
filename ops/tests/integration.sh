@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# curl http://localhost:80/welcome
+# curl http://localhost:80/test
 # - should output -
-# Hello Client! There is one record in the database for Pedro Tavares
+# This is a test endpoint.
 
-export STR=$(curl http://prod_client:8080/welcome)
-export SUB='Hello Client! There is one record in the database for Pedro Tavares'
+export STR=$(curl http://prod_client:80/test)
+export SUB='This is a test endpoint.'
 if [[ "$STR" != *"$SUB"* ]]; then
   echo 'Integration test failed!'
   echo 'App output = ' $STR
