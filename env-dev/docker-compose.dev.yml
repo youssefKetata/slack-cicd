@@ -26,7 +26,7 @@ services:
       dockerfile: Dockerfile.client.dev
     container_name: supspace-client
     restart: unless-stopped
-    image: supspace-client-test-1
+    image: supspace-client
     environment:
       - NODE_ENV=development
       - NEXT_PUBLIC_SOCKET=http://localhost:8090
@@ -51,7 +51,7 @@ services:
       dockerfile: Dockerfile.api.dev
     container_name: supspace-api
     restart: unless-stopped
-    image: supspace-api-test-2
+    image: supspace-api
     environment:
       ONGODB_URI: mongodb://mongo:supspace1@mongodb:27017/
       MONGODB_DB_NAME: supspace-api-dev
