@@ -52,6 +52,8 @@ pipeline {
         }
         stage('Integration tests') {
             steps {
+                // Set script permissions inside the Docker container
+                sh 'chmod +x ./ops/tests/integration.sh'
                 // Tests if app client reaches the backend and gets data from the database
                 sh './ops/tests/integration.sh'
             }
