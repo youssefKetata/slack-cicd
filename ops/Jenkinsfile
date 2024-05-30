@@ -13,7 +13,7 @@ pipeline {
                 echo "Branch: ${GIT_BRANCH}    Commit: ${GIT_COMMIT}"
                 echo "Jenkins node: ${NODE_NAME}    Build tag: ${BUILD_TAG}"
                 echo "Jenkins workspace: ${WORKSPACE}"
-                dir("./app") {
+                dir("./env-dev") {
                     // Build and start dev
                     sh 'docker-compose -f docker-compose.dev.yml up -d --build'
                 }
@@ -26,7 +26,7 @@ pipeline {
             }
             post { // clean-up dev
                 always {
-                    dir("./app") {
+                    dir("./env-dev") {
                         sh 'docker-compose -f docker-compose.dev.yml down'
                         sh 'docker rmi supspace-client'
                         sh 'docker rmi supspace-api'
@@ -44,7 +44,7 @@ pipeline {
             //     NODE_ENV="production"
             // }
             steps {
-                dir("./app") {
+                dir("./env-dev") {
                     sh 'docker-compose -f docker-compose.staging.yml up -d --build'
                     // sh 'sleep 120' // wait for DB to be ready (to be replaced with container status check)
                 }
@@ -58,7 +58,7 @@ pipeline {
             post {
                 always {
                     // Stop staging environment 
-                    dir("./app") {
+                    dir("./env-dev") {
                         sh 'docker-compose -f docker-compose.staging.yml down'
                     }
                 }
@@ -105,7 +105,7 @@ pipeline {
         //         branch 'main'
         //     }
         //     steps {
-        //         dir("./app") {
+        //         dir("./env-dev") {
         //              // Rolling update to production (waits for update to finish)
         //             sh 'docker service update --image localhost:5000/client_${GIT_COMMIT} prod_client'
         //             sh 'docker service update --image localhost:5000/server_${GIT_COMMIT} --env-add MONGO_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@${MONGO_URI} --env-add PORT=${SRV_PORT} --env-add NODE_ENV=${NODE_ENV} prod_server'
