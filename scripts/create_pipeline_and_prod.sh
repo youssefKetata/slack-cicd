@@ -5,14 +5,10 @@
 # Only run this script ONCE, to create the DevOps   #
 # infrastructure and production environment.        #
 #                                                   #
-# BEFORE running this script, run create_volumes.sh #
-# and configure Gogs to run on port 9001.           #
-#                                                   #
-# (see README.md at                                 #
-# github.com/ptavaressilva/MERN_app_CI-CD_pipeline  #
-# for details)                                      #
-#                                                   #
 #####################################################
+
+# Log in to Docker Hub or your Docker registry
+docker login -u hamzaedam01@gmail.com -p Cin#11149398
 
 # Create network
 docker network create -d overlay --attachable ops_overlay_network
@@ -21,44 +17,45 @@ docker network create -d overlay --attachable ops_overlay_network
 docker-compose -f ../ops/docker-compose.ops.yml up -d
 
 # Build images for production frontend, backend and database
-docker-compose -f ../app/docker-compose.staging.yml build
-docker pull mongo
+docker-compose -f ../env-dev/docker-compose.staging.yml build
+# docker pull mongo
 
 # Push images to registry
-docker image tag client localhost:5000/client_install
-docker image tag server localhost:5000/server_install
-docker image tag mongo localhost:5000/db_install
-docker push localhost:5000/client_install
-docker push localhost:5000/server_install
-docker push localhost:5000/db_install
+docker image tag supspace-client edamh158/supspace-client:latest
+docker image tag supspace-api edamh158/supspace-api:latest
+docker image tag mongo edamh158/supspace-mongo:latest
+docker push edamh158/supspace-api:latest
+docker push edamh158/supspace-client:latest
+docker push edamh158/supspace-api:latest
+
 
 # Clean up local images
-docker rmi localhost:5000/client_install
-docker rmi localhost:5000/server_install
-docker rmi localhost:5000/db_install
-docker rmi client
-docker rmi server
+docker rmi edamh158/supspace-client
+docker rmi edamh158/supspace-api
+docker rmi edamh158/supspace-mongo
+docker rmi supspace-client
+docker rmi supspace-api
 docker rmi mongo
 
 # Load production environment variables on this host, for stack startup
-export $(grep -v '^#' ./.env_prod | xargs)
+# export $(grep -v '^#' ./.env_prod | xargs)
 
 # Start production
-docker stack deploy --compose-file ../app/docker-compose.prod.yml prod
+docker stack deploy --compose-file ../env-dev/docker-compose.prod.yml prod
 
 # Add prod_client service to the ops_network, for smoke tests
-docker service update --network-add ops_overlay_network prod_client
-docker service update --network-add ops_overlay_network prod_server
-docker service update --network-add ops_overlay_network prod_db
+docker service update --network-add ops_overlay_network prod_supspace-client
+docker service update --network-add ops_overlay_network prod_supspace-api
+docker service update --network-add ops_overlay_network prod_mongodb
 
 # remove production environment variables from host
-unset SRV_PORT
-unset MONGO_URI
-unset MONGO_PORT
-unset MONGO_INITDB_ROOT_USERNAME
-unset MONGO_INITDB_ROOT_PASSWORD
-unset NODE_ENV
-unset GIT_COMMIT
+# unset SRV_PORT
+# unset MONGO_URI
+# unset MONGO_PORT
+# unset MONGO_INITDB_ROOT_USERNAME
+# unset MONGO_INITDB_ROOT_PASSWORD
+# unset NODE_ENV
+# unset GIT_COMMIT
 
 # Clean intermediate images - be carefull if you have other images that cannot be removed
 echo "The next command may take some time (if you confirm)."

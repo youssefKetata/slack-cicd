@@ -1,23 +1,23 @@
 version: "3.1"
 services:
 
-  jenkins-server:
-    container_name: jenkins-server
-    image: jenkins/jenkins:lts
-    ports:
-      - "8100:8080"
-      - "50000:50000"
-    volumes:
-      - ./jenkins_home:/var/jenkins_home
-    networks:
-      - supspace-network
-    # environment:
-    #   - JENKINS_OPTS="--prefix=/jenkins"
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "5"
-        max-size: "10m"
+  # jenkins-server:
+  #   container_name: jenkins-server
+  #   image: jenkins/jenkins:lts
+  #   ports:
+  #     - "8100:8080"
+  #     - "50000:50000"
+  #   volumes:
+  #     - ./jenkins_home:/var/jenkins_home
+  #   networks:
+  #     - supspace-network
+  #   # environment:
+  #   #   - JENKINS_OPTS="--prefix=/jenkins"
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-file: "5"
+  #       max-size: "10m"
     
 
   supspace-client:
@@ -27,6 +27,10 @@ services:
     container_name: supspace-client
     restart: unless-stopped
     image: supspace-client-test-1
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_SOCKET=http://localhost:8090
+      - NEXT_PUBLIC_API=http://localhost:8090/api/v1
     ports:
       - "3000:3000"
     volumes:
@@ -42,10 +46,25 @@ services:
       - supspace-api
 
   supspace-api:
-    build: ../supspace-api
+    build: 
+      context: ../supspace-api
+      dockerfile: Dockerfile.api.dev
     container_name: supspace-api
     restart: unless-stopped
     image: supspace-api-test-2
+    environment:
+      ONGODB_URI: mongodb://mongo:supspace1@mongodb:27017/
+      MONGODB_DB_NAME: supspace-api-dev
+      JWT_SECRET: edam1234
+      JWT_EXPIRE: 30d
+      SMTP_USERNAME: supchat24@outlook.com
+      SMTP_PASSWORD: cin11149398
+      NODE_ENV: development
+      GOOGLE_CLIENT_ID: 319168896136-u7trpcna9m3sas7snc93d2dac9hjpopr.apps.googleusercontent.com
+      GOOGLE_CLIENT_SECRET: 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
+      CLIENT_URL: http://supspace-client:3000
+      API_URL: http://localhost:8080/api/v1
+      STAGING_URL: http://localhost:3000
     ports:
       - "8090:8080"
     volumes:
