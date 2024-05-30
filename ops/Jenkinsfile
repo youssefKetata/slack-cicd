@@ -2,14 +2,13 @@ pipeline {
     agent any
     stages {
         stage('Build and run dev') {
-            environment {
-                SRV_PORT=4000
-                MONGO_URI="app_db_1:27017/db?authSource=admin"
-                MONGO_PORT=27017
-                MONGO_INITDB_ROOT_USERNAME = credentials('MONGO_INITDB_ROOT_USERNAME')
-                MONGO_INITDB_ROOT_PASSWORD = credentials('MONGO_INITDB_ROOT_PASSWORD_DEV')
-                NODE_ENV="development"
-            }
+            // environment {
+            //     MONGO_URI="app_db_1:27017/db?authSource=admin"
+            //     MONGO_PORT=27017
+            //     MONGO_INITDB_ROOT_USERNAME = credentials('MONGO_INITDB_ROOT_USERNAME')
+            //     MONGO_INITDB_ROOT_PASSWORD = credentials('MONGO_INITDB_ROOT_PASSWORD_DEV')
+            //     NODE_ENV="development"
+            // }
             steps {
                 echo "Branch: ${GIT_BRANCH}    Commit: ${GIT_COMMIT}"
                 echo "Jenkins node: ${NODE_NAME}    Build tag: ${BUILD_TAG}"
@@ -36,14 +35,14 @@ pipeline {
             }
         }
         stage('Build and run staging') {
-            environment {
-                SRV_PORT=4000
-                MONGO_URI="app_db_1:27017/db?authSource=admin"
-                MONGO_PORT=27017
-                MONGO_INITDB_ROOT_USERNAME = credentials('MONGO_INITDB_ROOT_USERNAME')
-                MONGO_INITDB_ROOT_PASSWORD = credentials('MONGO_INITDB_ROOT_PASSWORD_STAGING')
-                NODE_ENV="production"
-            }
+            // environment {
+            //     SRV_PORT=4000
+            //     MONGO_URI="app_db_1:27017/db?authSource=admin"
+            //     MONGO_PORT=27017
+            //     MONGO_INITDB_ROOT_USERNAME = credentials('MONGO_INITDB_ROOT_USERNAME')
+            //     MONGO_INITDB_ROOT_PASSWORD = credentials('MONGO_INITDB_ROOT_PASSWORD_STAGING')
+            //     NODE_ENV="production"
+            // }
             steps {
                 dir("./app") {
                     sh 'docker-compose -f docker-compose.staging.yml up -d --build'
