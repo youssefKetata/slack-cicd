@@ -18,7 +18,7 @@ WORKDIR /app
 
 RUN mkdir -p /dist
 
-COPY package*.json .
+COPY package*.json ./
 
 RUN npm ci --omit=dev
 
