@@ -125,7 +125,7 @@ pipeline {
                     sh 'docker service update --image edamh158/server:{GIT_COMMIT} prod_server'
                     // sh 'docker service update --image edamh158/db:{GIT_COMMIT} --env-add MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME} --env-add MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD} prod_db'
                     sh 'docker service update --image edam158/db:{GIT_COMMIT} prod_db'
-
+                    sh 'docker service update --image edamh158/supspace-nginx:${GIT_COMMIT} prod_nginx'
                 }
             }
         }
@@ -135,13 +135,14 @@ pipeline {
             }
             steps {
                 // TODO: CHANGE HOST AND SSH IF NEEDED
-                sh "curl 'http://prod_client:80'"
+                sh "curl 'http://prod_nginx:80'"
             }
             post {
                 failure {
                     sh "docker service rollback prod_client"
                     sh "docker service rollback prod_server"
                     sh "docker service rollback prod_db"
+                    sh "docker service rollback prod_nginx"
                 }
             }
         }
