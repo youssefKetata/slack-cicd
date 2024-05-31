@@ -10,8 +10,8 @@ services:
     image: supspace-client
     environment:
       NODE_ENV: production
-      NEXT_PUBLIC_SOCKET: http://localhost:8090
-      NEXT_PUBLIC_API: http://localhost:8090/api/v1
+      NEXT_PUBLIC_SOCKET: http://localhost:8091
+      NEXT_PUBLIC_API: http://localhost:8091/api/v1
     volumes:
       - .:/app
       - /app/node_modules
@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile.nginx.prod
     container_name: nginx
     ports:
-      - 80:80
+      - 81:80
     networks:
       - supspace-network
     depends_on:
@@ -42,7 +42,7 @@ services:
     restart: unless-stopped
     image: supspace-api
     ports:
-      - "8090:8080"
+      - "8091:8080"
     volumes:
       # - .:/app
       - /app/node_modules

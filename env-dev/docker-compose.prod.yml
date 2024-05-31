@@ -2,7 +2,7 @@ version: "3.1"
 
 services:
   supspace-client:
-    image: supspace-client-prod
+    image: supspace-client
     deploy:
       replicas: 3
       update_config:
@@ -23,7 +23,7 @@ services:
       - supspace-client
 
   supspace-api:
-    image: supspace-api-prod
+    image: supspace-api
     deploy:
       replicas: 3
       update_config:
