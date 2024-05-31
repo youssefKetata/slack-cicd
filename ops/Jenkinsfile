@@ -1,5 +1,10 @@
 pipeline {
     agent any
+
+    environment {
+        DOCKER_CREDS = credentials('docker-hub-creds')
+    }
+
     stages {
         stage('Build and run dev') {
             // environment {
@@ -77,6 +82,8 @@ pipeline {
                 sh "docker image tag supspace-client edamh158/supspace-client_${GIT_COMMIT}"
                 sh "docker image tag supspace-api edamh158/supspace-api_${GIT_COMMIT}"
                 sh "docker image tag mongo:4.4.17-focal edamh158/supspace-mongo_${GIT_COMMIT}"
+                // Login to Docker Hub
+                sh "echo \$DOCKER_CREDS_PSW | docker login -u \$DOCKER_CREDS_USR --password-stdin"
                 // push images
                 sh "docker push edamh158/supspace-client_${GIT_COMMIT}"
                 sh "docker push edamh158/supspace-api_${GIT_COMMIT}"
