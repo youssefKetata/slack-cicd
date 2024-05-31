@@ -119,6 +119,7 @@ pipeline {
             }
             steps {
                 dir("./env-dev") {
+                    sh "echo \$DOCKER_CREDS_PSW | docker login -u \$DOCKER_CREDS_USR --password-stdin"
                      // Rolling update to production (waits for update to finish)
                     sh 'docker service update --image edamh158/client:${GIT_COMMIT} prod_supspace-client'
                     // sh 'docker service update --image edamh158/server:{GIT_COMMIT} --env-add MONGO_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@${MONGO_URI} --env-add PORT=${SRV_PORT} --env-add NODE_ENV=${NODE_ENV} prod_server'
