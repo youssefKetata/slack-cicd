@@ -130,6 +130,7 @@ pipeline {
                 branch 'master'
             }
             steps {
+                // TODO: CHANGE HOST AND SSH IF NEEDED
                 sh "curl 'http://prod_client:80'"
             }
             post {
