@@ -82,12 +82,14 @@ pipeline {
                 sh "docker image tag supspace-client edamh158/supspace-client:${GIT_COMMIT}"
                 sh "docker image tag supspace-api edamh158/supspace-api:${GIT_COMMIT}"
                 sh "docker image tag mongo:4.4.17-focal edamh158/supspace-mongo:${GIT_COMMIT}"
+                sh "docker image tag nginx:alpine edamh158/supspace-nginx:${GIT_COMMIT}"
                 // Login to Docker Hub
                 sh "echo \$DOCKER_CREDS_PSW | docker login -u \$DOCKER_CREDS_USR --password-stdin"
                 // push images
                 sh "docker push edamh158/supspace-client:${GIT_COMMIT}"
                 sh "docker push edamh158/supspace-api:${GIT_COMMIT}"
                 sh "docker push edamh158/supspace-mongo:${GIT_COMMIT}"
+                sh "docker push edamh158/supspace-nginx:${GIT_COMMIT}"
             }
             post {
                 always {
@@ -95,9 +97,11 @@ pipeline {
                     sh "docker rmi edamh158/supspace-client:${GIT_COMMIT}"
                     sh "docker rmi edamh158/supspace-api:${GIT_COMMIT}"
                     sh "docker rmi edamh158/supspace-mongo:${GIT_COMMIT}"
+                    sh "docker rmi edamh158/supspace-nginx:${GIT_COMMIT}"
                     sh "docker rmi supspace-client"
                     sh "docker rmi supspace-api"
                     sh "docker rmi mongo:4.4.17-focal"
+                    sh "docker rmi nginx:alpine"
                 }
             }
         }
@@ -120,7 +124,7 @@ pipeline {
                     // sh 'docker service update --image edamh158/server:{GIT_COMMIT} --env-add MONGO_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@${MONGO_URI} --env-add PORT=${SRV_PORT} --env-add NODE_ENV=${NODE_ENV} prod_server'
                     sh 'docker service update --image edamh158/server:{GIT_COMMIT} prod_server'
                     // sh 'docker service update --image edamh158/db:{GIT_COMMIT} --env-add MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME} --env-add MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD} prod_db'
-                    sh 'docker service update --image localhost:5000/db:{GIT_COMMIT} prod_db'
+                    sh 'docker service update --image edam158/db:{GIT_COMMIT} prod_db'
 
                 }
             }

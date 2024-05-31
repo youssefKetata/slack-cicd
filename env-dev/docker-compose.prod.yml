@@ -2,7 +2,7 @@ version: "3.1"
 
 services:
   supspace-client:
-    image: supspace-client
+    image: edamh158/supspace-client:latest
     deploy:
       replicas: 3
       update_config:
@@ -11,7 +11,7 @@ services:
     stdin_open: true
 
   nginx: 
-    image: env-dev-nginx
+    image: edamh158/supspace-nginx:latest
     deploy:
       replicas: 3
       update_config:
@@ -23,7 +23,7 @@ services:
       - supspace-client
 
   supspace-api:
-    image: supspace-api
+    image: edamh158/supspace-api:latest
     deploy:
       replicas: 3
       update_config:

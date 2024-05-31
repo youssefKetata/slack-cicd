@@ -23,11 +23,12 @@ docker-compose -f ../env-dev/docker-compose.staging.yml build
 # Push images to registry
 docker image tag supspace-client edamh158/supspace-client:latest
 docker image tag supspace-api edamh158/supspace-api:latest
-docker image tag mongo edamh158/supspace-mongo:latest
+docker image tag mongo:4.4.17-focal edamh158/supspace-mongo:latest
+docker image tag nginx:alpine edamh158/supspace-nginx:latest
 docker push edamh158/supspace-api:latest
 docker push edamh158/supspace-client:latest
 docker push edamh158/supspace-api:latest
-
+docker push edamh158/supspace-nginx:latest
 
 # Clean up local images
 docker rmi edamh158/supspace-client
@@ -47,6 +48,7 @@ docker stack deploy --compose-file ../env-dev/docker-compose.prod.yml prod
 docker service update --network-add ops_overlay_network prod_supspace-client
 docker service update --network-add ops_overlay_network prod_supspace-api
 docker service update --network-add ops_overlay_network prod_mongodb
+docker service update --network-add ops_overlay_network prod_nginx
 
 # remove production environment variables from host
 # unset SRV_PORT
