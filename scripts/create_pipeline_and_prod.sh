@@ -34,9 +34,11 @@ docker push edamh158/supspace-nginx:latest
 docker rmi edamh158/supspace-client
 docker rmi edamh158/supspace-api
 docker rmi edamh158/supspace-mongo
+docker rmi edamh158/supspace-nginx:latest
 docker rmi supspace-client
 docker rmi supspace-api
 docker rmi mongo
+docker rmi nginx:alpine
 
 # Load production environment variables on this host, for stack startup
 # export $(grep -v '^#' ./.env_prod | xargs)
