@@ -74,23 +74,23 @@ pipeline {
         stage('Push images to Registry') {
             steps {
                 // tag images
-                sh "docker image tag supspace-client edamh158/supspace-client"
-                sh "docker image tag supspace-api edamh158/supspace-api"
-                sh "docker image tag mongodb edamh158/supspace-mongo"
+                sh "docker image tag supspace-client edamh158/supspace-client_${GIT_COMMIT}"
+                sh "docker image tag supspace-api edamh158/supspace-api_${GIT_COMMIT}"
+                sh "docker image tag mongo:4.4.17-focal edamh158/supspace-mongo_${GIT_COMMIT}"
                 // push images
-                sh "docker push edamh158/supspace-client"
-                sh "docker push edamh158/supspace-api"
-                sh "docker push edamh158/supspace-mongo"
+                sh "docker push edamh158/supspace-client_${GIT_COMMIT}"
+                sh "docker push edamh158/supspace-api_${GIT_COMMIT}"
+                sh "docker push edamh158/supspace-mongo_${GIT_COMMIT}"
             }
             post {
                 always {
                     // remove local images
-                    sh "docker rmi edamh158/supspace-client"
-                    sh "docker rmi edamh158/supspace-api"
-                    sh "docker rmi edamh158/supspace-mongo"
+                    sh "docker rmi edamh158/supspace-client_${GIT_COMMIT}"
+                    sh "docker rmi edamh158/supspace-api_${GIT_COMMIT}"
+                    sh "docker rmi edamh158/supspace-mongo_${GIT_COMMIT}"
                     sh "docker rmi supspace-client"
                     sh "docker rmi supspace-api"
-                    sh "docker rmi mongodb"
+                    sh "docker rmi mongo:4.4.17-focal"
                 }
             }
         }
