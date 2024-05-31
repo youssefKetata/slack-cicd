@@ -76,7 +76,7 @@ pipeline {
                 // tag images
                 sh "docker image tag supspace-client edamh158/supspace-client"
                 sh "docker image tag supspace-api edamh158/supspace-api"
-                sh "docker image tag mongo edamh158/supspace-mongo"
+                sh "docker image tag mongodb edamh158/supspace-mongo"
                 // push images
                 sh "docker push edamh158/supspace-client"
                 sh "docker push edamh158/supspace-api"
@@ -90,7 +90,7 @@ pipeline {
                     sh "docker rmi edamh158/supspace-mongo"
                     sh "docker rmi supspace-client"
                     sh "docker rmi supspace-api"
-                    sh "docker rmi supspace-mongo"
+                    sh "docker rmi mongodb"
                 }
             }
         }
