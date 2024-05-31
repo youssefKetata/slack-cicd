@@ -120,18 +120,18 @@ pipeline {
             steps {
                 dir("./env-dev") {
                      // Rolling update to production (waits for update to finish)
-                    sh 'docker service update --image edamh158/client:{GIT_COMMIT} prod_client'
+                    sh 'docker service update --image edamh158/client:{GIT_COMMIT} prod_supspace-client'
                     // sh 'docker service update --image edamh158/server:{GIT_COMMIT} --env-add MONGO_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@${MONGO_URI} --env-add PORT=${SRV_PORT} --env-add NODE_ENV=${NODE_ENV} prod_server'
-                    sh 'docker service update --image edamh158/server:{GIT_COMMIT} prod_server'
+                    sh 'docker service update --image edamh158/server:{GIT_COMMIT} prod_supspace-api'
                     // sh 'docker service update --image edamh158/db:{GIT_COMMIT} --env-add MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME} --env-add MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD} prod_db'
-                    sh 'docker service update --image edam158/db:{GIT_COMMIT} prod_db'
+                    sh 'docker service update --image edam158/db:{GIT_COMMIT} prod_mongodb'
                     sh 'docker service update --image edamh158/supspace-nginx:${GIT_COMMIT} prod_nginx'
                 }
             }
         }
         stage('Smoke tests and roll-back if needed') {
             when {
-                branch 'master'
+                branch 'main'
             }
             steps {
                 // TODO: CHANGE HOST AND SSH IF NEEDED
@@ -139,9 +139,9 @@ pipeline {
             }
             post {
                 failure {
-                    sh "docker service rollback prod_client"
-                    sh "docker service rollback prod_server"
-                    sh "docker service rollback prod_db"
+                    sh "docker service rollback prod_supspace-client"
+                    sh "docker service rollback prod_supspace-api"
+                    sh "docker service rollback prod_mongodb"
                     sh "docker service rollback prod_nginx"
                 }
             }
