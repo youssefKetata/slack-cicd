@@ -101,41 +101,44 @@ pipeline {
                 }
             }
         }
-        // stage('Deploy to prod') {
-        //     environment {
-        //         SRV_PORT=4000
-        //         MONGO_URI="prod_db:27017/db?authSource=admin"
-        //         MONGO_PORT=27017
-        //         MONGO_INITDB_ROOT_USERNAME = credentials('MONGO_INITDB_ROOT_USERNAME')
-        //         MONGO_INITDB_ROOT_PASSWORD = credentials('MONGO_INITDB_ROOT_PASSWORD_PROD')
-        //         NODE_ENV="production"
-        //     }
-        //     when {
-        //         branch 'main'
-        //     }
-        //     steps {
-        //         dir("./env-dev") {
-        //              // Rolling update to production (waits for update to finish)
-        //             sh 'docker service update --image localhost:5000/client_${GIT_COMMIT} prod_client'
-        //             sh 'docker service update --image localhost:5000/server_${GIT_COMMIT} --env-add MONGO_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@${MONGO_URI} --env-add PORT=${SRV_PORT} --env-add NODE_ENV=${NODE_ENV} prod_server'
-        //             sh 'docker service update --image localhost:5000/db_${GIT_COMMIT} --env-add MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME} --env-add MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD} prod_db'
-        //         }
-        //     }
-        // }
-        // stage('Smoke tests and roll-back if needed') {
-        //     when {
-        //         branch 'master'
-        //     }
-        //     steps {
-        //         sh "curl 'http://prod_client:8080'"
-        //     }
-        //     post {
-        //         failure {
-        //             sh "docker service rollback prod_client"
-        //             sh "docker service rollback prod_server"
-        //             sh "docker service rollback prod_db"
-        //         }
-        //     }
-        // }
+        stage('Deploy to prod') {
+            // environment {
+            //     SRV_PORT=4000
+            //     MONGO_URI="prod_db:27017/db?authSource=admin"
+            //     MONGO_PORT=27017
+            //     MONGO_INITDB_ROOT_USERNAME = credentials('MONGO_INITDB_ROOT_USERNAME')
+            //     MONGO_INITDB_ROOT_PASSWORD = credentials('MONGO_INITDB_ROOT_PASSWORD_PROD')
+            //     NODE_ENV="production"
+            // }
+            when {
+                branch 'main'
+            }
+            steps {
+                dir("./env-dev") {
+                     // Rolling update to production (waits for update to finish)
+                    sh 'docker service update --image edamh158/client:{GIT_COMMIT} prod_client'
+                    // sh 'docker service update --image edamh158/server:{GIT_COMMIT} --env-add MONGO_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@${MONGO_URI} --env-add PORT=${SRV_PORT} --env-add NODE_ENV=${NODE_ENV} prod_server'
+                    sh 'docker service update --image edamh158/server:{GIT_COMMIT} prod_server'
+                    // sh 'docker service update --image edamh158/db:{GIT_COMMIT} --env-add MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME} --env-add MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD} prod_db'
+                    sh 'docker service update --image localhost:5000/db:{GIT_COMMIT} prod_db'
+
+                }
+            }
+        }
+        stage('Smoke tests and roll-back if needed') {
+            when {
+                branch 'master'
+            }
+            steps {
+                sh "curl 'http://prod_client:80'"
+            }
+            post {
+                failure {
+                    sh "docker service rollback prod_client"
+                    sh "docker service rollback prod_server"
+                    sh "docker service rollback prod_db"
+                }
+            }
+        }
     }
 }
