@@ -4,8 +4,8 @@
 # - should output -
 # This is a test endpoint.
 
-export STR=$(curl http://localhost:80/test)
-export SUB='This is a test endpoint.'
+export STR=$(curl http://prod_client:80/test)
+export SUB='This is a test endpoint'
 if [[ "$STR" != *"$SUB"* ]]; then
   echo 'Integration test failed!'
   echo 'App output = ' $STR
