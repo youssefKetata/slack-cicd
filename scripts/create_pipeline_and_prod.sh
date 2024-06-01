@@ -24,7 +24,7 @@ docker-compose -f ../env-dev/docker-compose.staging.yml build
 docker image tag supspace-client edamh158/supspace-client:latest
 docker image tag supspace-api edamh158/supspace-api:latest
 # docker image tag mongo:4.4.17-focal edamh158/supspace-mongo:latest
-docker image tag nginx:alpine edamh158/supspace-nginx:latest
+docker image tag env-dev-nginx edamh158/supspace-nginx:latest
 docker push edamh158/supspace-api:latest
 docker push edamh158/supspace-client:latest
 # docker push edamh158/supspace-mongo:latest
@@ -38,7 +38,7 @@ docker rmi edamh158/supspace-nginx:latest
 docker rmi supspace-client
 docker rmi supspace-api
 docker rmi mongo
-docker rmi nginx:alpine
+docker rmi env-dev-nginx
 
 # Load production environment variables on this host, for stack startup
 # export $(grep -v '^#' ./.env_prod | xargs)
