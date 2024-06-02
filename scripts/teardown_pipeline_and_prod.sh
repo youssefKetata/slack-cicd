@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Remove DevOps infrastructure
-docker-compose -f ./ops/docker-compose.ops.yml down
+docker-compose -f ../ops/docker-compose.ops.yml down
 
 # Remove production
 docker stack rm prod
