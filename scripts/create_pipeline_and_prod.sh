@@ -13,6 +13,17 @@ docker login -u hamzaedam01@gmail.com -p Cin#11149398
 # Create network
 docker network create -d overlay --attachable ops_overlay_network
 
+# Create volumes for Jenkins, Gogs, Registry, Prometheus and Grafana
+sudo mkdir -p ../ops/var/prometheus/prometheus_data
+sudo mkdir -p ../ops/etc/prometheus
+sudo chmod -R 777 ../ops/var/prometheus/prometheus_data
+sudo chmod -R 777 ../ops/etc/prometheus
+
+sudo mkdir -p ../ops/var/grafana/grafana_data
+sudo mkdir -p ../ops/etc/grafana/provisioning
+sudo chmod -R 777 ../ops/var/grafana/grafana_data
+sudo chmod -R 777 ../ops/etc/grafana/provisioning
+
 # Build and run containers for Jenkins, Gogs, Registry, Prometheus and Grafana
 docker-compose -f ../ops/docker-compose.ops.yml up -d
 
