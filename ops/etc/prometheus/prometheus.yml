@@ -8,7 +8,7 @@ scrape_configs:
   - job_name: "MERN_APP"
     scrape_interval: 5s
     static_configs:
-      - targets: ["prod_server:8080"]
+      - targets: ["prod_supspace-api:8080"]
 
   - job_name: "prometheus"
     scrape_interval: 5s
