@@ -7,13 +7,6 @@ pipeline {
 
     stages {
         stage('Build and run dev') {
-            // environment {
-            //     MONGO_URI="app_db_1:27017/db?authSource=admin"
-            //     MONGO_PORT=27017
-            //     MONGO_INITDB_ROOT_USERNAME = credentials('MONGO_INITDB_ROOT_USERNAME')
-            //     MONGO_INITDB_ROOT_PASSWORD = credentials('MONGO_INITDB_ROOT_PASSWORD_DEV')
-            //     NODE_ENV="development"
-            // }
             steps {
                 echo "Branch: ${GIT_BRANCH}    Commit: ${GIT_COMMIT}"
                 echo "Jenkins node: ${NODE_NAME}    Build tag: ${BUILD_TAG}"
@@ -40,14 +33,6 @@ pipeline {
             }
         }
         stage('Build and run staging') {
-            // environment {
-            //     SRV_PORT=4000
-            //     MONGO_URI="app_db_1:27017/db?authSource=admin"
-            //     MONGO_PORT=27017
-            //     MONGO_INITDB_ROOT_USERNAME = credentials('MONGO_INITDB_ROOT_USERNAME')
-            //     MONGO_INITDB_ROOT_PASSWORD = credentials('MONGO_INITDB_ROOT_PASSWORD_STAGING')
-            //     NODE_ENV="production"
-            // }
             steps {
                 dir("./env-dev") {
                     sh 'docker-compose -f docker-compose.staging.yml up -d --build'
@@ -81,14 +66,12 @@ pipeline {
                 // tag images
                 sh "docker image tag supspace-client edamh158/supspace-client:${GIT_COMMIT}"
                 sh "docker image tag supspace-api edamh158/supspace-api:${GIT_COMMIT}"
-                // sh "docker image tag mongo:4.4.17-focal edamh158/supspace-mongo:${GIT_COMMIT}"
                 sh "docker image tag nginx:alpine edamh158/supspace-nginx:${GIT_COMMIT}"
                 // Login to Docker Hub
                 sh "echo \$DOCKER_CREDS_PSW | docker login -u \$DOCKER_CREDS_USR --password-stdin"
                 // push images
                 sh "docker push edamh158/supspace-client:${GIT_COMMIT}"
                 sh "docker push edamh158/supspace-api:${GIT_COMMIT}"
-                // sh "docker push edamh158/supspace-mongo:${GIT_COMMIT}"
                 sh "docker push edamh158/supspace-nginx:${GIT_COMMIT}"
             }
             post {
@@ -96,7 +79,6 @@ pipeline {
                     // remove local images
                     sh "docker rmi edamh158/supspace-client:${GIT_COMMIT}"
                     sh "docker rmi edamh158/supspace-api:${GIT_COMMIT}"
-                    // sh "docker rmi edamh158/supspace-mongo:${GIT_COMMIT}"
                     sh "docker rmi edamh158/supspace-nginx:${GIT_COMMIT}"
                     sh "docker rmi supspace-client"
                     sh "docker rmi supspace-api"
@@ -106,14 +88,6 @@ pipeline {
             }
         }
         stage('Deploy to prod') {
-            // environment {
-            //     SRV_PORT=4000
-            //     MONGO_URI="prod_db:27017/db?authSource=admin"
-            //     MONGO_PORT=27017
-            //     MONGO_INITDB_ROOT_USERNAME = credentials('MONGO_INITDB_ROOT_USERNAME')
-            //     MONGO_INITDB_ROOT_PASSWORD = credentials('MONGO_INITDB_ROOT_PASSWORD_PROD')
-            //     NODE_ENV="production"
-            // }
             when {
                 branch 'main'
             }
@@ -122,10 +96,7 @@ pipeline {
                     sh "echo \$DOCKER_CREDS_PSW | docker login -u \$DOCKER_CREDS_USR --password-stdin"
                      // Rolling update to production (waits for update to finish)
                     sh 'docker service update --image edamh158/supspace-client:${GIT_COMMIT} prod_supspace-client'
-                    // sh 'docker service update --image edamh158/server:{GIT_COMMIT} --env-add MONGO_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@${MONGO_URI} --env-add PORT=${SRV_PORT} --env-add NODE_ENV=${NODE_ENV} prod_server'
                     sh 'docker service update --image edamh158/supspace-api:${GIT_COMMIT} prod_supspace-api'
-                    // sh 'docker service update --image edamh158/db:{GIT_COMMIT} --env-add MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME} --env-add MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD} prod_db'
-                    // sh 'docker service update --image edam158/supspace-mongo:${GIT_COMMIT} prod_mongodb'
                     sh 'docker service update --image edamh158/supspace-nginx:${GIT_COMMIT} prod_nginx'
                 }
             }
@@ -135,14 +106,12 @@ pipeline {
                 branch 'main'
             }
             steps {
-                // TODO: CHANGE HOST AND SSH IF NEEDED
                 sh "curl 'http://prod_nginx:80'"
             }
             post {
                 failure {
                     sh "docker service rollback prod_supspace-client"
                     sh "docker service rollback prod_supspace-api"
-                    // sh "docker service rollback prod_mongodb"
                     sh "docker service rollback prod_nginx"
                 }
             }
