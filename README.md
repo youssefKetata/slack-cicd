@@ -343,13 +343,13 @@ Azure provides 100$ for students enrolled in a university, or through the Github
 
 We chose to use Microsoft Azure for our project. In order to create a virtual machine on Azure:
 
-**1-** Log into your Azure account.
-**2-** Hit the *create virtual machine* button on the screen that appears.
-**3-** This takes you to a different interface where you should hit the *Create* button.
-**4-** This takes you to a third interface containing a form. Follow the instructions to choose the specifications of your machine
-**5-** Once created, go over to *Network Configuration* and open up the HTTP, SSH, Prometheus and Grafana Ports on the firewall.
-**6-** If you chose to access your machine through SSH, a key should have been downloaded to your machine (DO NOT LOSE IT).
-**7-** SSH into your remote server and pull the repository you have created. The command should look something like this `ssh -i remote-machine_key.pem azureuser@public_ip_address`
+- **1-** Log into your Azure account.
+- **2-** Hit the *create virtual machine* button on the screen that appears.
+- **3-** This takes you to a different interface where you should hit the *Create* button.
+- **4-** This takes you to a third interface containing a form. Follow the instructions to choose the specifications of your machine
+- **5-** Once created, go over to *Network Configuration* and open up the HTTP, SSH, Prometheus and Grafana Ports on the firewall.
+- **6-** If you chose to access your machine through SSH, a key should have been downloaded to your machine (DO NOT LOSE IT).
+- **7-** SSH into your remote server and pull the repository you have created. The command should look something like this `ssh -i remote-machine_key.pem azureuser@public_ip_address`
 
 The image below showcases the machine that we opted to use for this solution:
 
