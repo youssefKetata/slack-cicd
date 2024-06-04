@@ -8,7 +8,7 @@ This is a project by Edam Hamza & Skander Chayoukhi realized for their end-of-ye
 
 It creates a Jenkins CI/CD pipeline for a JavaScript/MERN application, with **development**, **staging** and **production** environments, tests and monitoring.
 
-![CI/CD pipeline](https://github.com/ptavaressilva/MERN_app_CI-CD_pipeline/blob/master/img/pipeline.png?raw=true)
+![CI/CD pipeline](https://gitlab.com/supspace/supspace-collaboration-platform/-/blob/58c5f48b68dbe128424eb184eb1c7c0a1dd613e2/img/DevOps.png)
 
 ### Requirements and coverage
 
