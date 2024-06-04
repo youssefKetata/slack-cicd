@@ -4,9 +4,9 @@
 
 CI/CD pipelines allow for a fast response to business needs, while other DevOps practices support stable, secure and predictable services, striking the perfect balance  between stability and the speed of change.
 
-This is a final project by Pedro Tavares for a DevOps Bootcamp course at [GeeksHubs Academy](https://geekshubsacademy.com/) (in Spanish).
+This is a project by Edam Hamza & Skander Chayoukhi realized for their end-of-year project at the Higher School of Communications at Tunis (SUP'COM).
 
-It creates a Continuous Delivery pipeline for a JavaScript/MERN application, with **development**, **staging** and **production** environments, tests and monitoring.
+It creates a Jenkins CI/CD pipeline for a JavaScript/MERN application, with **development**, **staging** and **production** environments, tests and monitoring.
 
 ![CI/CD pipeline](https://github.com/ptavaressilva/MERN_app_CI-CD_pipeline/blob/master/img/pipeline.png?raw=true)
 
