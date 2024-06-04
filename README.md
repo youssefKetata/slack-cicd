@@ -1,14 +1,14 @@
 # MERN application with CI-CD pipeline
 
-## Continuous Delivery pipeline and monitoring for a MERN application
+## Continuous Integration & Continuous Delivery Pipeline and Monitoring for a MERN application
 
 CI/CD pipelines allow for a fast response to business needs, while other DevOps practices support stable, secure and predictable services, striking the perfect balance  between stability and the speed of change.
 
 This is a project by Edam Hamza & Skander Chayoukhi realized for their end-of-year project at the Higher School of Communications at Tunis (SUP'COM).
 
-It creates a Jenkins CI/CD pipeline for a JavaScript/MERN application, with **development**, **staging** and **production** environments, tests and monitoring.
+It creates a Jenkins CI/CD pipeline for a MERN-stack application, with **development**, **staging** and **production** environments, tests and monitoring.
 
-![CI/CD pipeline](https://gitlab.com/supspace/supspace-collaboration-platform/-/blob/58c5f48b68dbe128424eb184eb1c7c0a1dd613e2/img/DevOps.png)
+![CI/CD pipeline](./img/DevOps.png)
 
 ### Requirements and coverage
 
@@ -19,42 +19,46 @@ It creates a Jenkins CI/CD pipeline for a JavaScript/MERN application, with **de
 - [x] Pushing to master must trigger a pipeline that terminates with a deployment to production (Continuous Delivery)
 - [x] The pipeline must include Development, Staging and Production environments
 - [x] The system must include application and infrastructure monitoring, and a dashboard
-
-*The actual software application falls outside the scope of this project.*
+- [x] The underlying application must be a web-based platform that inspires from collaboration platforms like Slack & Discord.
 
 ### The Technological Stack
 
 Currently the project uses the following technologies:
 
 - Docker (incl. Docker Compose and Swarm)
-- MongoDB, Express, React and NodeJS (MERN stack)
+- MongoDB, Express, Next.js and NodeJS (MERN stack)
 - Jest (for unit tests)
-- Docker Registry
-- Gogs
+- Dockerhub
 - Jenkins
 - Prometheus, Grafana and Container Advisor
+- Nginx Reverse Proxy
 
-### Application placeholder
+### Underlying Application
 
-The application placeholder was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), the officially supported way to create single-page React applications. The app was based on [mern-docker-starter](https://github.com/joshdcuneo/mern-docker-starter.git).
+The application placeholder was bootstrapped with [Create Next App](https://github.com/vercel/next.js/tree/02e144d37634d45edac1bd32a391c49edf1ef069/packages/create-next-app), the officially supported way to create single-page Next applications. The app was loosely based on [slack-clone-client](https://github.com/adeolaadeoti/slack-clone-client.git) with **heavy changes** and **fixes** implemented. The latter included **additional Features**, **Security Enhancements** and **Updates to the Interface**.
 
-When the app is started, it creates a user in the database. When a page is requested to the React client, it calls the Express server, which queries the database and returns the username created at startup.
+#### Brief Description
 
-![The application](https://github.com/ptavaressilva/MERN_app_CI-CD_pipeline/blob/master/img/app_page.png?raw=true)
+Our solution combines different features from known collaboration platforms, notably **Microsoft Teams**, **Slack** & **Discord** in a web-based platform that is tailored to the specific need of our community at SUP'COM. There are a more in-depth description of the application and the way its features work in the [supspace-client-ReadmeFile](https://gitlab.com/supspace/supspace-collaboration-platform/-/blob/main/supspace-client/README.md?ref_type=heads)
 
-As **this application falls ouside the scope of the project**, its limitations were not addressed (e.g. there are some dependancy issues and it creates the same user every time it starts, so the database will have multiple copies of this user on persistent volumes).
+![Brief look at the application](./img/workspace-if.png)
 
 ### Application Architecture
 
-Each environment includes a frontal server to serve static contents and pass API call to the backend, a backend server to query the database and serve API calls, and a database. Application telemetry is provided to Prometheus from the backend.
 
-In each environment there are subtle changes, to account for the desired use of the environment (development, testing, etc.)
+Each environment includes a **frontal server** to serve static contents and pass API call to the backend, a **backend server** to query the database and serve API calls, and **a database**. Application telemetry is provided to Prometheus from the backend.
+
+The Production environment are exposed to the outside world through the **NGINX reverse proxy** on port 80. This considerably enhances performance, security and logging capabilities. It give us more control over what a client can and cannot know about our internal servers. 
+
+![Application Architecture](./img/web_architecture.png)
+
+In each environment there are **subtle changes**, to account for the **desired use** of the environment (development, testing, etc.)
 
 ### Development
 
 - The react frontend application is served with Node.
 
-- The Express backend uses Nodemon, which reloads on code change (useful for standalone lolcal environments, in the developer's machine).
+- The Express backend uses Nodemon, which reloads on code change (useful for standalone local environments, in the developer's machine).
 
 - The database container is stateful, as its data resides inside the container (it is destroyed whenever the container is removed).
 
@@ -78,30 +82,30 @@ In each environment there are subtle changes, to account for the desired use of 
 
 - Multiple replicas of the front and backend containers are orchestrated with Docker Swarm, to scale capacity according to demand.
 
-![Environment containers and volumes](https://github.com/ptavaressilva/MERN_app_CI-CD_pipeline/blob/master/img/environments.png?raw=true)
+![Environment containers and volumes](./img/environments.png)
 
 ## Folder structure
 
 This project has the following file structure:
-
 ```
++- env-dev                <--- Docker-Compose files & Docker Volumes
 |
-+- app        <--- Infrastructure as code (IaaC)for the application stack
-|  +- client  <--- Frontend files (React / JavaScript)
-|  +- server  <--- Backend files (Express / JavaScript)
++- supspace-cleint        <--- Frontend files (Next / JavaScript)
 |
-+- ops        <--- DevOps IaaC, including pipeline and integration tests
++- supspace-api           <--- Frontend files (Express / JavaScript)
 |
-+- scripts    <--- Scripts to launch and tear-down the infrastructure
++- ops                    <--- DevOps IaaC, including pipeline and integration tests
+|
++- scripts                <--- Scripts to launch and tear-down the infrastructure
 ```
 
 ## Running the project
 
 This DevOps ecosystem includes all containers shown in the image below.
 
-![Ops containers](https://github.com/ptavaressilva/MERN_app_CI-CD_pipeline/blob/master/img/Orchestration_and_volumes.png?raw=true)
+![Ops containers](./img/Orchestration_and_volumes.png)
 
-Production and the DevOps infrastructure are segregated (in separate bridge networks), so an overlay network is used to enable:
+**Production** and the **DevOps infrastructure** are **segregated** for Security reasons (in separate bridge networks), so an **overlay network** is used to enable:
 
 - Jenkins to make smoke test in production
 
@@ -109,74 +113,50 @@ Production and the DevOps infrastructure are segregated (in separate bridge netw
 
 This infrastructure enables you to run a Continuous Delivery pipeline like the one presented in the image below, which is implemented in this project.
 
-![Jenkins pipeline](https://github.com/ptavaressilva/MERN_app_CI-CD_pipeline/blob/master/img/Jenkins_pipeline.png?raw=true)
+![Jenkins pipeline](./img/pipeline.png)
 
-Typically a developer needs a standalone development environment on her/his local machine, to develop and test the application code. Once code is ready, the developer pushes that code to the SCM repository (Gogs, in our case), triggering the Continuous Delivery pipeline. If the code was pushed to the master branch, it will be deployed in production with a rolling deployment, assuming it passes unit, integration and smoke tests, naturally.
+Typically a developer needs a **standalone development environment** on their local machine, to develop and test the application code. Once code is ready, the developer pushes that code to the SCM repository (Gitlab, in our case), triggering the Continuous Delivery pipeline. If the code was pushed to the **main branch**, it will be deployed in production with a **rolling deployment**, assuming it passes unit, integration and smoke tests, naturally.
 
 To create a local development environment (on the developer's machine) **the machine needs to have docker and docker-compose installed**. If you want to run this pipeline on your machine, **the Docker Engine must be in Swarm mode**, as we'll use a swarm stack for production.
 
 ### Creating a local development environment
 
-Create a local development environment using `docker-compose -f ./app/docker-compose.dev.yml up -d`
+Create a local development environment using `docker-compose -f ./env-dev/docker-compose.dev.yml up -d`
 
 These folders on your computer will be mapped to frontend and backend server foldders:
 
 | Folder on your computer | Server (container) | Folder on server   |
 | ----------------------- | ------------------ | ------------------ |
-| ./client/src            | Frontend           | /app/client/src    |
-| ./client/public         | Frontend           | /app/client/public |
-| ./server/src            | Backend            | /app/server/src    |
+| ./supspace-client/src   | Frontend           | /app/client/src    |
+| ./supspace-client/public| Frontend           | /app/client/public |
+| ./supspace-api/src      | Backend            | /app/server/src    |
 
 **Note:** when Jenkins builds and deploys the dev environment, within the pipeline, the code is copied to the container (not mapped).
 
-You can  access the application on your local dev environment at [http://localhost:3000](http://localhost:3000)
+You can access the application on your local dev environment at [http://localhost:3000](http://localhost:3000)
 
 ### Step 1 - Data persistance
 
-We'll use Docker volumes  to persist the staging and prod databases, as well as data in Jenkins, Gogs (a and Registry (Docker image registry).
+We'll use Docker volumes to persist the staging and prod databases, as well as data in Jenkins and various other functionalities
 
-Let's create the necessary Docker volumes by running the script `./ops/create_volumes.sh`
+The associated volumes are automatically created by docker-compose. However, some linux distributions will restrict access permissions to said volumes by the container. Thus, it would be best to create the necessary Docker volumes manually and giving them execution permission prior to running the docker-compose command or by running the script `./ops/create_volumes.sh`.
 
-### Step 2 - Configure Gogs
 
-On startup, Gogs is served at port 3000, which will be used for our dev frontend, so we will configure it to use port 9001.
-
-Start the default Gogs with:
-
-`docker-compose -f ./ops/docker-compose.gogs3000.yml up -d`
-
-Use `watch docker ps` to determine when the container with the image *gogs/gogs* is running (Ctrl+C to exit), then connect to the Gogs webpage on [http://localhost:3000](http://localhost:3000) and configure the following parameters in the *Install Steps For First-time Run* page:
-
-| Parameter                                                | Value                    |
-| -------------------------------------------------------- | ------------------------ |
-| Database Type                                            | `SQLite3`                |
-| HTTP Port                                                | `9001`                   |
-| Application URL                                          | `http://localhost:9001`/ |
-| Admin Account Settings / Username                        | `gogsadmin`              |
-| Admin Account Settings / Password (and confirm password) | `gogssecret`             |
-| Admin Account Settings / email                           | `a@a.a`                  |
-
-Hit the *"Install Gogs"* button to finish the configuration. **It will will not find the page, but that's ok**. The container needs to restart to pick up the port change. For now we are done with Gogs on port 3000, so we shut it down with:
-
-`docker-compose -f ./ops/docker-compose.gogs3000.yml down`
-
-Don't worry! Your configuration in saved in the `gogs` docker volume created earlier.
-
-### Step 3 - Create a production bootstrap variables file
+### Step 2 - Create a production bootstrap variables file
 
 The development, staging and production secrets will live in Jenkins Credentials, but to start the production stack for the first time we'll create a file called `.env_prod` in the ./script folder, with the following contents:
 
 ```bash
-SRV_PORT=4000
-MONGO_URI=prod_db:27017/db?authSource=admin
+SRV_PORT=8080
+MONGO_URI=prod_mongodb://mongo:supspace1@localhost:27017/
 MONGO_PORT=27017
-MONGO_INITDB_ROOT_USERNAME=pedro
-MONGO_INITDB_ROOT_PASSWORD=kewlSecret
+MONGO_INITDB_ROOT_USERNAME=mongo
+MONGO_INITDB_ROOT_PASSWORD=supspace-1
 NODE_ENV=production
 GIT_COMMIT=install
 ```
 
-*.env* files are excluded in gitignore, so they will not be pushed to the Gogs repository.
+*.env* files are excluded in gitignore, so they will not be pushed to the Gitlab repository.
 
 ### Step 4 - Start the DevOps infrastructure (including production)
 
@@ -184,7 +164,7 @@ To start the DevOps pipeline infrastructure run the sript:
 
 `./scripts/create_pipeline_and_prod.sh`
 
-This will create containers for Jenkins, Gogs, Registry, Prometheus and Grafana, a overlay network and clusters for the application front and backends, as well as a service for the production Mongo database.
+This will create containers for Jenkins, Prometheus and Grafana, an overlay network and clusters for the application's frontend, backend & Nginx, as well as a service for the production Mongo database.
 
 Configure Jenkins
 Use the `docker logs $(docker ps --filter , click onme=ops_jenkins_1  andq)` command to view the Jenkins service logs and find the installation password, in a segment looking like this:
@@ -206,7 +186,7 @@ cicd_stack_jenkins.1.jft378dfo4tm@docker-desktop    | **************************
 cicd_stack_jenkins.1.jft378dfo4tm@docker-desktop    | *************************************************************
 ```
 
-Open Jenkins (at [localhost:8000](http://localhost:8000/)), provide the password (in the capture above it is `18b9792120c6466f82f37c95363bc7bf`) and then click on the *Install suggested plugins* option.
+Open Jenkins (at [localhost:8000](http://localhost:8000/)), provide the password (in the screenshot above it is `18b9792120c6466f82f37c95363bc7bf`) and then click on the *Install suggested plugins* option.
 
 After the pluggins finish installing, in the *Create First Admin User* page, create the following user:
 
@@ -222,30 +202,26 @@ In the *Instance Configuration* page leave the URL as `http://localhost:8000/` a
 
 To install additional plugins, go to *Manage Jenkins* (left-hand menu), click on *Manage Plugins* and then click on the *Available* tab.
 
-Type `Blue Ocean`on the text box and check the box for the pluggin with that name, then press *Download and install after restart*.
+Type `Blue Ocean` on the text box and check the box for the pluggin with that name, then press *Download and install after restart*.
 
 Finally, check the *Restart Jenkins when installation is complete and no jobs are running* checkbox at the bottom of the page.
 
+**!!** Blue Ocean as it stands provides easy-to-use Pipeline visualization. It was intended to be a rethink of the Jenkins user experience, designed from the ground up for Jenkins Pipeline. Blue Ocean was intended to reduce clutter and increases clarity for all users.
+
 ### Step 5 - Create and clone the remote mern_app repository
 
-Go to <http://localhost:9001/gogsadmin> and create a Gogs repository using the + dropdown on the top right corner. Call it `mern_app` and hit the *Create Repository* button.
+Go to your preferred platform and create a repository. Call it `mern_app` and hit the *Create Repository* button.
 
-To use the pipeline you need to clone the Gogs `mern_app` repository created above into a folder in your computer that must reside outside the folder where you cloned this [MERN_app_CI-CD_pipeline](https://github.com/ptavaressilva/MERN_app_CI-CD_pipeline) project.
+To use the pipeline you need to clone the Gogs `mern_app` repository created above into a folder in your computer that must reside outside the folder where you cloned this [supspace-collaboration-platform](https://gitlab.com/supspace/supspace-collaboration-platform.git) project.
 
 ```bash
 cd ..
 # you should be otside the MERN_app_CI-CD_pipeline folder
-git clone http://localhost:9001/gogsadmin/mern_app
+git clone http://path/to/your/repo
 cd mern_app
 ```
 
-As the Gogs repository is empty, you will get a warning, but it's ok.
-
-```bash
-warning: You appear to have cloned an empty repository.
-```
-
-Copy the contents of the [MERN_app_CI-CD_pipeline](https://github.com/ptavaressilva/MERN_app_CI-CD_pipeline) to the *mern_app* folder you created above, but **be carefull not to copy the  hidden .git folder** (if you copy from a local clone of this repo).
+Copy the contents of the [supspace-collaboration-platform](https://gitlab.com/supspace/supspace-collaboration-platform.git) to the *mern_app* folder you created above, but **be carefull not to copy the  hidden .git folder** (if you copy from a local clone of this repo).
 
 ### Step 6 - Configure the pipeline
 
@@ -257,23 +233,25 @@ In the next page, in the *General* tab, provide the values below:
 | Field              | Value                                     |
 | ------------------ | ----------------------------------------- |
 | Branch source      | Git                                       |
-| Project Repository | `http://gogs:9001/gogsadmin/mern_app.git` |
+| Project Repository | `http://path/to/your/repo`                |
 | Credentials > Add  | MERN app Continuous Delivery              |
 
 In the *Folder Credentials Provider: MERN app Continuous Delivery* pop-up, provide the following values:
 
 | Field    | Valiue       |
 | -------- | ------------ |
-| Username | `gogsadmin`  |
-| Password | `gogssecret` |
+| Username | `username`   |
+| Password | `password`   |
 
 Press the *Add* button to return to the pipeline *General* tab.
 
-In the *Credetials* field, select gogsadmin/****
+In the *Credetials* field, select username/****
 
 In the *Build Configuration* tab, leave *by Jenkisfile* selected and insert `ops/Jenkinsfile` in the *Script Path* box.
 
-Below, in the *Scan Multibranch Pipeline Triggers* section, check *"Periodically if not otherwise run"*, set the interval to `1 minute` and press the *Save* button at the bottom of the page.
+Install *the Multibranch Scan Webhook Trigger* for Jenkins in order to be able to trigger the pipeline with every push to the repository. This plugin is a general purpose webhook that works on any platform of your chosing. Keep in mind, however, that this **only** works if you deploy Jenkins on a **remote server**. The plugin should have a new section added to your pipeline configuration where you should specify your `http://path/to/your/repo`. This plugin requires further configuration on the repository platform that differs depending on what you chose (Refer to documentation for that). 
+
+**!!** This webhook is **automatically** activated **if and only if** you are using **Github**.
 
 ### Step 7 - Store development, staging and production environment variables
 
@@ -285,27 +263,27 @@ Click *Add Crededntials* and repeat the proccess for each entry in the table bel
 
 | Username                           | Password   |
 | ---------------------------------- | ---------- |
-| MONGO_INITDB_ROOT_PASSWORD_DEV     | kewlSecret |
-| MONGO_INITDB_ROOT_PASSWORD_STAGING | kewlSecret |
-| MONGO_INITDB_ROOT_PASSWORD_PROD    | kewlSecret |
+| MONGO_INITDB_ROOT_PASSWORD_DEV     | supsace1   |
+| MONGO_INITDB_ROOT_PASSWORD_STAGING | supsace1   |
+| MONGO_INITDB_ROOT_PASSWORD_PROD    | supsace1   |
+
+**!!** Keep in mind that for simplicity reasons and to make sure the app works for you, these variables are included in the docker-compose files. If you want to keep your application secured, you must remove them and do it this way instead.
 
 ### You are now ready to push code and run the pipeline
 
-Go to the *mern_app* folder,  make your first commit and push to Gogs:
+Go to the *mern_app* folder,  make your first commit and push to your repository platform:
 
 ```bash
 git add .
-git commit -m"Initial commit"
-git push origin master
+git commit -m "Initial commit"
+git push origin master/main
 ```
-
-When prompted, provide `gogsadmin` as username and `gogssecret` as password.
 
 Now go to the Jenkins page on [http://localhost:8000](https://localhost:8000) and watch the pipeline execute. If you installed the Blue Ocean plugin, click on *Blue Ocean* on the lefthand side menu to use this enhanced UI.
 
 Once your code passes unit, integration and smoke tests, your commit will be deployed into production with a rolling update.
 
-[![Click to see pipeline at work (video)](https://github.com/ptavaressilva/MERN_app_CI-CD_pipeline/blob/master/img/pipeline_working.gif?raw=true)](https://youtu.be/E8cVWvzC9cI)
+![Click to see pipeline at work](./img/jenkins-pipeline.jpg)
 
 ## Observability
 
@@ -324,7 +302,7 @@ Password: grafanasecret
 
 Click on the *configuration* icon on the left vertical bar and choose *data sources*, then click on the *add data source* button, select Prometheus and on the URL text box type `http://prometheus:9090`. Click on the *Save & Test* button at the bottom of the page to finish.
 
-Now that we are getting metrics from Prometheus, let's create the first Grafana dashboard, with metrics colected from inside the application (with the library *prom-client*).
+Now that we are getting metrics from Prometheus, let's create the first Grafana dashboard, with metrics collected from inside the application (with the library *prom-client*).
 
 #### Application telemetry
 
@@ -332,7 +310,7 @@ The application is really simple and there's not much we can measure, but let's 
 
 We'll create a dashboard like this:
 
-![Monitoring the app](https://github.com/ptavaressilva/MERN_app_CI-CD_pipeline/blob/master/img/MERN_APP_dashboard.png?raw=true) 
+![Monitoring the app](./img/MERN_APP_dashboard.png) 
 
 To create the application telemetry dashboard, click on '+' sign on the left side vertical icon bar and choose *dashboard*. On the new dashboard, click the *+ Add new pannel* button and then select Prometheus as the data source. In the metrics text box paste the first PromQL query in the table below, give the pannel a descriptive title and press the "Apply" button.
 
@@ -340,10 +318,10 @@ Repeat for the remaining metrics.
 
 | Función                                        | PromQL query                                                                 |
 | ---------------------------------------------- | ---------------------------------------------------------------------------- |
-| Number of times the app page was seen          | MERN_APP_web_app_calls{instance="prod_server:4000",job="MERN_APP"}           |
-| Number of server/DB conections errors          | MERN_APP_db_connection_failures{instance="prod_server:4000",job="MERN_APP"}  |
-| Number of successfull server/DB conections     | MERN_APP_db_connection_successes{instance="prod_server:4000",job="MERN_APP"} |
-| Number of times Prometheus scraped app metrics | MERN_APP_metrics_read_total{instance="prod_server:4000",job="MERN_APP"}      |
+| Number of times the app page was seen          | MERN_APP_web_app_calls{instance="supspace-api:4000",job="MERN_APP"}          |
+| Number of server/DB conections errors          | MERN_APP_db_connection_failures{instance="supspace-api:4000",job="MERN_APP"} |
+| Number of successfull server/DB conections     | MERN_APP_db_connection_successes{instance="supspace-api:4000",job="MERN_APP"}|
+| Number of times Prometheus scraped app metrics | MERN_APP_metrics_read_total{instance="supspace-api:4000",job="MERN_APP"}     |
 
 #### Container monitoring
 
@@ -351,11 +329,34 @@ To create a dashboard to monitor the containers, click on '+' sign on the left s
 
 Type `179`in the *Import via grafana.com* box, the press *load*, choose Prometheus as the data source and click *Import* to finish.
 
-![Container dashboard](https://github.com/ptavaressilva/MERN_app_CI-CD_pipeline/blob/master/img/cAdvisory_dashboard.png?raw=true) 
+![Container dashboard](./img/cAdvisory_dashboard.png) 
 
 ### A word about OS'
 
-This project was designed and tested in macOS Catalina, with Docker Desktop in swarm mode. Some changes may be required if you want to run it in Windows. If you want to try it out using Windows, I suggest you run it inside an Ubuntu virtual machine. Making this project compatible with Windows is a great opportunity for you to contribute! :)
+This project was designed and tested in Windows 11 and tweaked to also work for Linux Ubuntu, with Docker Desktop in swarm mode. Some changes may be required if you want to run it in MacOS.
+
+## Deployment to Azure
+
+If you have gotten all of the above to work locally, you are ready to migrate to a remote server. You can chose whatever cloud provider you like.
+
+Azure provides 100$ for students enrolled in a university, or through the Github Student Pack. 
+
+We chose to use Microsoft Azure for our project. In order to create a virtual machine on Azure:
+
+**1-** Log into your Azure account.
+**2-** Hit the *create virtual machine* button on the screen that appears.
+**3-** This takes you to a different interface where you should hit the *Create* button.
+**4-** This takes you to a third interface containing a form. Follow the instructions to choose the specifications of your machine
+**5-** Once created, go over to *Network Configuration* and open up the HTTP, SSH, Prometheus and Grafana Ports on the firewall.
+**6-** If you chose to access your machine through SSH, a key should have been downloaded to your machine (DO NOT LOSE IT).
+**7-** SSH into your remote server and pull the repository you have created. The command should look something like this `ssh -i remote-machine_key.pem azureuser@public_ip_address`
+
+The image below showcases the machine that we opted to use for this solution:
+
+ ![Azure Server](./img/azure-machine.jpg) 
+
+ **!!** Chances are, the machine will have been brought down by the time you see this screenshot. That's why the IP@ won't work. 
+
 
 ## Improvements
 
@@ -363,48 +364,40 @@ Oh, where to start?...
 
 There are many, many improvements that need to be made in order to make this a production ready solution. Here are a few, just to get you started:
 
-Security
+### Security
   
 - Backups ***must*** be implemented. Please! Now! A quick way to start is to mount the docker volumes is a separate container and use it to make copies.
-
-- The registry configuration used is only appropriate for testing, as a production-ready registry must be protected by TLS and should use an access-control mechanism.
   
-Availability  
-
-- Hosting Jenkins and the other DevOps containers in a local machine only makes sense for demonstration purposes, so the solution should be migrated from a local host to a cloud provider, like AWS, GCP, Digital Ocean on one of many others.
+### Availability  
 
 - Jenkins and the other servers that support the pipeline should be clustered (e.g. adding Jenkins workers).
 
 - In this example Docker Swarm only has one host. It's quite simple to add workers to swarm.
 
-- Gogs was installed with a SSQLite3 database within the Gogs container (mounted on a docker volume). In a production setting the DB should be more robust and installed in a sepparate container.
-
-- Here and there you will find images that are not locked to a specific version (e.g. occurences of latest, LTS, etc.) This can generate make builds mutable and generate inestability. It can be solved easily by specifying a specific versio (e.g. mongo:4.4.0-bionic).
+- Here and there you will find images that are not locked to a specific version (e.g. occurences of latest, LTS, etc.) This can generate make builds mutable and generate inestability. It can be solved easily by specifying a specific version (e.g. mongo:4.4.0-bionic).
 
 - Docker named volumes should be replaced with something more persistent, like a cloud driver, for example.
 
-- In order for swarm to have more  than one node, shared file storage must be used.
+- In order for swarm to have more than one node, a shared file storage system must be used.
 
-Operation
+### Operation
 
 - Due to time restrictions the configuration of the different containers was done mostly manually. Much could be automated (Using [Jenkins Configuration as Code](https://github.com/jenkinsci/configuration-as-code-plugin), for example).
 
 - Image tagging should be improved (including the project name, for example)
 
-- Jenkins looks for commits every minute, but a webhook would be a faster alternative.
+### Testing
 
-Testing
-
-- Tests were implemented as proof of concept. There is only one unit test, one integration test and one smoke test. In a normal operation, code coverage can be an indicator of the minimum number of unit tests that should. There would also be many more unit tests than integration and end-to-end tests.
+- Tests were implemented as proof of concept. There are only a few unit test, one integration test and one smoke test. In a normal operation, code coverage can be an indicator of the minimum number of unit tests that should. There would also be many more unit tests than integration and end-to-end tests.
 
 - Other types of tests should be incorporated, including stress tests, Fuzz tests and Soak tests.
 
-Bottlenecks
+### Bottlenecks
 
-- Concurrent pipeline exec of how many unit test ution is not safe at this stage. Further testing is required.
+- Concurrent pipeline execution of unit tests is not safe at this stage. Further testing is required.
 
 - The pipeline takes far too long to run. Work should be done to take it down to five minutes at most.
 
-We'll... I hope you find this project usefull.
 
-Feel free to contribute.
+
+# Feel free to contribute!
