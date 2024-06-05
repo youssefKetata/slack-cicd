@@ -1,6 +1,6 @@
 # MERN application with CI-CD pipeline
 
-## Continuous Integration & Continuous Delivery Pipeline and Monitoring for a MERN application
+## Continuous Integration & Continuous Delivery Pipeline and Monitoring for a MERN application Orchestrated by Docker Swarm
 
 CI/CD pipelines allow for a fast response to business needs, while other DevOps practices support stable, secure and predictable services, striking the perfect balance  between stability and the speed of change.
 
@@ -398,6 +398,12 @@ There are many, many improvements that need to be made in order to make this a p
 
 - The pipeline takes far too long to run. Work should be done to take it down to five minutes at most.
 
+
+## Collaborators
+<a href="https://github.com/Nourhene-Azaiez/Real-time-Predictive-maintenance-system/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=Nourhene-Azaiez/Real-time-Predictive-maintenance-system" />
+  
+</a>
 
 
 # Feel free to contribute!

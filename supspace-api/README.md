@@ -1,12 +1,11 @@
-# Slack Clone Api Repository
-- Client repository https://github.com/adeolaadeoti/slack-clone-client
+# SUP'SPACE Api Repository
 
 ## Table of Contents
 
 - [Introduction](#introduction)
 - [Features](#features)
 - [Getting Started](#getting-started)
-  - [Installation](#installation)
+  - [Installation](#Set-up)
 - [Usage](#usage)
   - [User Registration](#user-registration)
   - [Creating Channels](#creating-channels)
@@ -20,7 +19,7 @@
 
 Slack clone is a powerful team collaboration platform that allows you to communicate and collaborate with your team members in real-time. Whether you're working remotely or in the same office, our application provides a seamless and efficient way to stay connected.
 
-![Screenshot](https://res.cloudinary.com/adeolaadeoti/image/upload/v1695161023/screenshot_jsd2mf.png)
+![Screenshot](../img/workspace-if.png)
 
 ## Features
 
@@ -38,51 +37,30 @@ Slack clone is a powerful team collaboration platform that allows you to communi
 
 ## Getting Started
 
-### Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/adeolaadeoti/slack-clone-api.git
-   ```
-
-2. Change to the project directory:
-
-   ```bash
-   cd slack-clone-api
-   ```
+### Set-up
 
 3. Install dependencies:
 
    ```bash
-   yarn
+   npm install --legacy-peer-deps
    ```
 
 4. Set up environment variables:
 
-   Create a `.env` file in the root directory of the project and add the necessary environment variables, including your database connection details and any API keys.
+   Create a `.env.local` file in the root directory of the project and add the necessary environment variables, including your database connection details and any API keys.
 
    ```plaintext
-   MONGODB_URI=
-   JWT_SECRET=
-   JWT_EXPIRE=30d
-   SMTP_USERNAME=
-   SMTP_PASSWORD=
-   MONGODB_DB_NAME=slack-clone-dev
-   NODE_ENV=development
-   GOOGLE_CLIENT_ID=
-   GOOGLE_CLIENT_SECRET=
-   CLIENT_URL=http://localhost:3000
-   API_URL=http://localhost:8080/api/v1
+   NEXT_PUBLIC_API=http://localhost:8080/api/v1
+   NEXT_PUBLIC_SOCKET=http://localhost:8080
    ```
 
 5. Start the application:
 
    ```bash
-   yarn start
+   npm start
    ```
 
-6. Access the application at `http://localhost:8080`.
+6. Access the application at `http://localhost:3000`.
 
 ## Usage
 
@@ -135,10 +113,6 @@ Slack clone is a powerful team collaboration platform that allows you to communi
    - Start your private conversation.
 
 2. Huddles provide a secure environment for group discussions with select team members.
-
-## Contributing
-
-We welcome contributions from the community.
 
 ## License
 

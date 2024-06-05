@@ -1,13 +1,12 @@
-# Slack Clone Client Repository
+# SUP'SPACE Client
 
-- Api repository https://github.com/adeolaadeoti/slack-clone-api
 
 ## Table of Contents
 
 - [Introduction](#introduction)
 - [Features](#features)
 - [Getting Started](#getting-started)
-  - [Installation](#installation)
+  - [Installation](#Set-up)
 - [Usage](#usage)
   - [User Registration](#user-registration)
   - [Creating Channels](#creating-channels)
@@ -21,7 +20,7 @@
 
 Slack clone is a powerful team collaboration platform that allows you to communicate and collaborate with your team members in real-time. Whether you're working remotely or in the same office, our application provides a seamless and efficient way to stay connected.
 
-![Screenshot](https://res.cloudinary.com/adeolaadeoti/image/upload/v1695161023/screenshot_jsd2mf.png)
+![Screenshot](../img/workspace-if.png)
 
 ## Features
 
@@ -39,24 +38,12 @@ Slack clone is a powerful team collaboration platform that allows you to communi
 
 ## Getting Started
 
-### Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/adeolaadeoti/slack-clone-client.git
-   ```
-
-2. Change to the project directory:
-
-   ```bash
-   cd slack-clone-client
-   ```
+### Set-up
 
 3. Install dependencies:
 
    ```bash
-   yarn
+   npm install --legacy-peer-deps
    ```
 
 4. Set up environment variables:
@@ -71,7 +58,7 @@ Slack clone is a powerful team collaboration platform that allows you to communi
 5. Start the application:
 
    ```bash
-   yarn start
+   npm start
    ```
 
 6. Access the application at `http://localhost:3000`.
@@ -127,10 +114,6 @@ Slack clone is a powerful team collaboration platform that allows you to communi
    - Start your private conversation.
 
 2. Huddles provide a secure environment for group discussions with select team members.
-
-## Contributing
-
-We welcome contributions from the community.
 
 ## License
 
