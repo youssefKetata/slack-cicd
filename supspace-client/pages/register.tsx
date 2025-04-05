@@ -92,7 +92,7 @@ const Register: NextPage = () => {
                   size="sm"
                   onClick={() => {
                     window.open(
-                      `${process.env.NEXT_PUBLIC_API}/auth/google/callback`,
+                      `${process.env.NEXT_PUBLIC_API}/auth/google`,
                       '_self'
                     )
                   }}
