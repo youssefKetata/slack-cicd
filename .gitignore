@@ -48,6 +48,12 @@ old-teammates.text
 ./env-dev/mongo-data
 ./supspace-client/.next
 
+# MongoDB data files
+env-dev/mongo-data/
+mongo-data/
+**/mongo-data/
+**/*mongo-data/
+
 # Environment variables
 env-dev/.env
 env-dev/*.env
