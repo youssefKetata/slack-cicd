@@ -109,6 +109,19 @@ This project uses environment variables for configuration. To set them up:
 
 **IMPORTANT:** Never commit the `.env` file to version control!
 
+## Data Directories
+
+### mongo-data directory
+
+The `env-dev/mongo-data` directory is used for persistent MongoDB storage in the development environment. This directory:
+
+- Is automatically created when running the development environment
+- Contains MongoDB data files
+- Should **not** be committed to version control
+- Is included in the `.gitignore` file
+
+When developing locally, this directory allows your database data to persist between container restarts. In staging and production environments, named Docker volumes are used instead for better data management.
+
 ## Running the project
 
 This DevOps ecosystem includes all containers shown in the image below.
