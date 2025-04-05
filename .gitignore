@@ -48,6 +48,11 @@ old-teammates.text
 ./env-dev/mongo-data
 ./supspace-client/.next
 
+# Environment variables
+env-dev/.env
+env-dev/*.env
+**/.env
+**/.env.local
 
 # OPS
 ./ops/push.sh
