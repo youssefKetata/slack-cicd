@@ -56,7 +56,8 @@ mongo-data/
 
 # Environment variables
 env-dev/.env
-env-dev/*.env
+env-dev/.env.*
+!env-dev/.env.*.example
 **/.env
 **/.env.local
 

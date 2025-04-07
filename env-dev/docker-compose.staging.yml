@@ -1,6 +1,5 @@
-version: "3.1"
+version: '3.1'
 services:
-
   supspace-client:
     build:
       context: ../supspace-client
@@ -21,8 +20,8 @@ services:
     tty: true
     depends_on:
       - supspace-api
-    
-  nginx: 
+
+  nginx:
     build:
       context: ../supspace-client
       dockerfile: Dockerfile.nginx.prod
@@ -35,84 +34,82 @@ services:
       - supspace-client
 
   supspace-api:
-    build: 
+    build:
       context: ../supspace-api
       dockerfile: Dockerfile.api.prod
     container_name: supspace-api
     restart: unless-stopped
     image: supspace-api
     ports:
-      - "8091:8080"
+      - '8091:8080'
     volumes:
       # - .:/app
       - /app/node_modules
-    # environment:
-    #   NODE_ENV: developmentdoc
     environment:
-      MONGODB_URI: mongodb://mongo:supspace1@mongodb:27017/
-      MONGODB_DB_NAME: supspace-api-dev
-      JWT_SECRET: edam1234
-      JWT_EXPIRE: 30d
-      SMTP_USERNAME: supchat24@outlook.com
-      SMTP_PASSWORD: cin11149398
-      NODE_ENV: development
-      GOOGLE_CLIENT_ID: SMTH.apps.googleusercontent.com
-      GOOGLE_CLIENT_SECRET: SMTH-SMTH
-      CLIENT_URL: http://supspace-client:3000
-      API_URL: http://localhost:8080/api/v1
-      STAGING_URL: http://localhost:3000
+      MONGODB_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/
+      MONGODB_DB_NAME: supspace-api-staging
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRE: ${JWT_EXPIRE}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      NODE_ENV: staging
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      CLIENT_URL: http://localhost:81
+      API_URL: http://localhost:8091/api/v1
+      STAGING_URL: http://localhost:81
     networks:
       - supspace-network
     depends_on:
       - mongodb
-  
+
   mongodb:
-      container_name: mongo_supspace
-      image: mongo:4.4.17-focal
-      restart: always
-      ports:
-        - "27018:27017"
-      volumes:
-        - ./mongo-data:/data/db
-      networks:
-        - supspace-network
-      environment:
-        MONGO_INITDB_ROOT_USERNAME: mongo
-        MONGO_INITDB_ROOT_PASSWORD: supspace1
-        MONGO_URI: mongodb://mongo:supspace1@localhost:27017/
-      # profiles: ["app","dev"]
-      logging:
-        driver: "json-file"
-        options:
-          max-file: "5"
-          max-size: "10m"
+    container_name: mongo_supspace
+    image: mongo:4.4.17-focal
+    restart: always
+    ports:
+      - '27018:27017'
+    volumes:
+      - ./mongo-data:/data/db
+    networks:
+      - supspace-network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: supspace1
+      MONGO_URI: mongodb://mongo:supspace1@localhost:27017/
+    # profiles: ["app","dev"]
+    logging:
+      driver: 'json-file'
+      options:
+        max-file: '5'
+        max-size: '10m'
   mongo-express:
-      image: mongo-express:0.54.0
-      container_name: mongo-express_supspace
-      restart: always
-      ports:
-        - 8081:8081
-      networks:
-        - supspace-network
-      environment:
-        # ME_CONFIG_BASICAUTH_USERNAME: "mongo"
-        # ME_CONFIG_BASICAUTH_PASSWORD: "supspace1"
-        ME_CONFIG_SITE_BASEURL: "/mongodb/"
-        ME_CONFIG_MONGODB_URL: "mongodb://mongo:supspace1@mongo:27017/"
-        # ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
-        # - ME_CONFIG_MONGODB_ADMINUSERNAME=mongo
-        # - ME_CONFIG_MONGODB_ADMINPASSWORD=supspace1
-        ME_CONFIG_MONGODB_SERVER: "mongodb"
-        ME_CONFIG_MONGODB_ADMINUSERNAME: "mongo"
-        ME_CONFIG_MONGODB_ADMINPASSWORD: "supspace1"
-      depends_on:
-        - mongodb
-      # profiles: ["app","dev"]
-      logging:
-        driver: "json-file"
-        options:
-          max-file: "5"
-          max-size: "10m"
+    image: mongo-express:0.54.0
+    container_name: mongo-express_supspace
+    restart: always
+    ports:
+      - 8081:8081
+    networks:
+      - supspace-network
+    environment:
+      # ME_CONFIG_BASICAUTH_USERNAME: "mongo"
+      # ME_CONFIG_BASICAUTH_PASSWORD: "supspace1"
+      ME_CONFIG_SITE_BASEURL: '/mongodb/'
+      ME_CONFIG_MONGODB_URL: 'mongodb://mongo:supspace1@mongo:27017/'
+      # ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
+      # - ME_CONFIG_MONGODB_ADMINUSERNAME=mongo
+      # - ME_CONFIG_MONGODB_ADMINPASSWORD=supspace1
+      ME_CONFIG_MONGODB_SERVER: 'mongodb'
+      ME_CONFIG_MONGODB_ADMINUSERNAME: 'mongo'
+      ME_CONFIG_MONGODB_ADMINPASSWORD: 'supspace1'
+    depends_on:
+      - mongodb
+    # profiles: ["app","dev"]
+    logging:
+      driver: 'json-file'
+      options:
+        max-file: '5'
+        max-size: '10m'
 networks:
-      supspace-network:
-        driver: bridge
+  supspace-network:
+    driver: bridge
