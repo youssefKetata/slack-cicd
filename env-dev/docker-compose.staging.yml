@@ -70,7 +70,8 @@ services:
     ports:
       - '27018:27017'
     volumes:
-      - ./mongo-data:/data/db
+      - db_staging:/data/db
+
     networks:
       - supspace-network
     environment:
@@ -113,3 +114,6 @@ services:
 networks:
   supspace-network:
     driver: bridge
+
+volumes:
+  db_staging:

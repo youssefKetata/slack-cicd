@@ -1,8 +1,8 @@
-version: "3.1"
+version: '3.1'
 
 services:
   supspace-client:
-    image: edamh158/supspace-client:latest
+    image: youssef37/enetspace-client:latest
     deploy:
       replicas: 3
       update_config:
@@ -10,39 +10,39 @@ services:
         delay: 10s
     stdin_open: true
 
-  nginx: 
-    image: edamh158/supspace-nginx:latest
+  nginx:
+    image: youssef37/enetspace-nginx:latest
     deploy:
       replicas: 3
       update_config:
         parallelism: 1
         delay: 10s
     ports:
-      - "80:80"
+      - '80:80'
     depends_on:
       - supspace-client
 
   supspace-api:
-    image: edamh158/supspace-api:latest
+    image: youssef37/enetspace-api:latest
     deploy:
       replicas: 3
       update_config:
         parallelism: 1
         delay: 10s
     ports:
-      - "8090:8080"
+      - '8090:8080'
     environment:
       MONGODB_URI: mongodb://mongo:supspace1@mongodb:27017/
       MONGODB_DB_NAME: supspace-api-prod
-      JWT_SECRET: edam1234
-      JWT_EXPIRE: 30d
-      SMTP_USERNAME: supchat24@outlook.com
-      SMTP_PASSWORD: cin11149398
-      NODE_ENV: development
-      GOOGLE_CLIENT_ID: smth.apps.googleusercontent.com
-      GOOGLE_CLIENT_SECRET: SMTH-SMTH
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRE: ${JWT_EXPIRE}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      NODE_ENV: production
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       CLIENT_URL: http://supspace-client:3000
-      API_URL: http://localhost:8080/api/v1
+      API_URL: http://localhost:8090/api/v1
     command: node dist/index.js
 
   mongodb:
