@@ -14,7 +14,7 @@ export default function SlackLogo() {
         <IoLogoSlack size="2.5rem" color="white" />
       </ThemeIcon>
       <Text c="white" size="2xl" weight={600}>
-        SUP'SPACE
+        ENET'SPACE
       </Text>
     </Flex>
   )
