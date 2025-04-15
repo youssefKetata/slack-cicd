@@ -87,7 +87,7 @@ const Workspaces: NextPage = () => {
         <Flex justify="center">
           <Stack spacing="xs" align="start" w="38%" justify="center">
             <Text fz="3xl" fw={600} c="white">
-              Get started on SUP'SPACE
+              Get started on ENET'SPACE
             </Text>
             <Text fz="sm" mt="xs" w="75%">
               it's a new way to communicate with everyone you work with. it's
@@ -129,7 +129,7 @@ const Workspaces: NextPage = () => {
             <Center>
               <Flex direction="column" align="center" justify="center">
                 <Text fz="lg" fw={600} c="white">
-                  is your team already on SUP'SPACE?
+                  is your team already on ENET'SPACE?
                 </Text>
                 <Text fz="sm" mt="xs" w="75%" align="center">
                   We coudn't find any existing workspaces for the email address{' '}

@@ -29,31 +29,29 @@ import passport from 'passport'
 import cookieSession from 'cookie-session'
 import mongoose from 'mongoose'
 
-
-
-const Prometheus = require('prom-client');
+const Prometheus = require('prom-client')
 
 // create metrics for Prometheus
 
 // const metricsInterval = Prometheus.collectDefaultMetrics()
 
 const appTestsTotal = new Prometheus.Counter({
-    name: 'MERN_APP_web_app_calls',
-    help: 'Number of times the server API was tested by the client'
-});
+  name: 'MERN_APP_web_app_calls',
+  help: 'Number of times the server API was tested by the client',
+})
 
 const dbCallsFailTotal = new Prometheus.Counter({
-    name: 'MERN_APP_db_connection_failures',
-    help: 'Total number of server->db connection failures'
+  name: 'MERN_APP_db_connection_failures',
+  help: 'Total number of server->db connection failures',
 })
 
 const dbCallsSuccessTotal = new Prometheus.Counter({
-    name: 'MERN_APP_db_connection_successes',
-    help: 'Total number of server->db connection successes'
+  name: 'MERN_APP_db_connection_successes',
+  help: 'Total number of server->db connection successes',
 })
 const metricsReadTotal = new Prometheus.Counter({
-    name: 'MERN_APP_metrics_read_total',
-    help: 'Total number of metric readings'
+  name: 'MERN_APP_metrics_read_total',
+  help: 'Total number of metric readings',
 })
 
 // const httpRequestDurationMicroseconds = new Prometheus.Histogram({
@@ -63,13 +61,12 @@ const metricsReadTotal = new Prometheus.Counter({
 //     buckets: [0.10, 5, 15, 50, 100, 200, 300, 400, 500] // buckets for response time from 0.1ms to 500ms
 // })
 
-
 const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
     // origin: process.env.CLIENT_URL,
-    origin: "*",
+    origin: '*',
     methods: ['GET', 'POST'],
   },
 })
@@ -78,23 +75,18 @@ const io = new Server(server, {
 connectDB()
 
 // Handle the database connection and retry as needed
-const db = mongoose.connection;
-db.on("error", err => {
-    console.log("There was a problem connecting to the database: ", err);
-    console.log("Please trying again");
-    dbCallsFailTotal.inc(); // db connection fail counter metric
-    setTimeout(() => connectDB(), 5000);
-});
+const db = mongoose.connection
+db.on('error', (err) => {
+  console.log('There was a problem connecting to the database: ', err)
+  console.log('Please trying again')
+  dbCallsFailTotal.inc() // db connection fail counter metric
+  setTimeout(() => connectDB(), 5000)
+})
 
-db.once("open", () => {
-    dbCallsSuccessTotal.inc(); // db connection counter metric
-    console.log("Successfully connected to the database")
-});
-
-
-
-
-
+db.once('open', () => {
+  dbCallsSuccessTotal.inc() // db connection counter metric
+  console.log('Successfully connected to the database')
+})
 
 // Express configuration
 app.use(
@@ -140,6 +132,7 @@ app.use(cors())
 
 // Store users' sockets by their user IDs
 const users = {}
+console.log('Socket.IO server initialized with path:', io.path())
 
 // Set up WebSocket connections
 io.on('connection', (socket) => {
@@ -463,14 +456,14 @@ app.use('/api/v1/organisation', organisation)
 app.use('/api/v1/conversations', conversations)
 // Define a route
 app.get('/test', (req, res) => {
-  appTestsTotal.inc(); // metric for app calls
-  res.send('This is a test endpoint');
-});
-app.get("/metrics", (req, res) => {
-    metricsReadTotal.inc(); // metric readings counter metric
-    res.set('Content-Type', Prometheus.register.contentType);
-    res.send(Prometheus.register.metrics());
-});
+  appTestsTotal.inc() // metric for app calls
+  res.send('This is a test endpoint')
+})
+app.get('/metrics', (req, res) => {
+  metricsReadTotal.inc() // metric readings counter metric
+  res.set('Content-Type', Prometheus.register.contentType)
+  res.send(Prometheus.register.metrics())
+})
 
 // error handler
 app.use(errorResponse)
