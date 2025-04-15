@@ -1,12 +1,12 @@
 version: '3.1'
 services:
-  supspace-client:
+  enetspace-client:
     build:
       context: ../supspace-client
       dockerfile: Dockerfile.client.dev
-    container_name: supspace-client
+    container_name: enetspace-client
     restart: unless-stopped
-    image: supspace-client
+    image: enetspace-client
     environment:
       - NODE_ENV=development
       - NEXT_PUBLIC_SOCKET=http://localhost:8091
@@ -19,22 +19,22 @@ services:
     # environment:
     #   NODE_ENV: developmentdoc
     networks:
-      - supspace-network
+      - enetspace-network
     stdin_open: true
     tty: true
     depends_on:
-      - supspace-api
+      - enetspace-api
 
-  supspace-api:
+  enetspace-api:
     build:
       context: ../supspace-api
       dockerfile: Dockerfile.api.dev
-    container_name: supspace-api
+    container_name: enetspace-api
     restart: unless-stopped
-    image: supspace-api
+    image: enetspace-api
     environment:
       MONGODB_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/
-      MONGODB_DB_NAME: supspace-api-dev
+      MONGODB_DB_NAME: enetspace-api-dev
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRE: ${JWT_EXPIRE}
       SMTP_USERNAME: ${SMTP_USERNAME}
@@ -51,12 +51,12 @@ services:
       - .:/app
       - /app/node_modules
     networks:
-      - supspace-network
+      - enetspace-network
     depends_on:
       - mongodb
 
   mongodb:
-    container_name: mongo_supspace
+    container_name: mongo_enetspace
     image: mongo:4.4.17-focal
     restart: always
     ports:
@@ -64,7 +64,7 @@ services:
     volumes:
       - ./mongo-data:/data/db
     networks:
-      - supspace-network
+      - enetspace-network
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
@@ -77,12 +77,12 @@ services:
         max-size: '10m'
   mongo-express:
     image: mongo-express:0.54.0
-    container_name: mongo-express_supspace
+    container_name: mongo-express_enetspace
     restart: always
     ports:
       - 8081:8081
     networks:
-      - supspace-network
+      - enetspace-network
     environment:
       # ME_CONFIG_BASICAUTH_USERNAME: "mongo"
       # ME_CONFIG_BASICAUTH_PASSWORD: "supspace1"
@@ -103,5 +103,5 @@ services:
         max-file: '5'
         max-size: '10m'
 networks:
-  supspace-network:
+  enetspace-network:
     driver: bridge
