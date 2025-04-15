@@ -96,13 +96,23 @@ const Workspaces: NextPage = () => {
             </Text>
             <Stack>
               <Button
-                loading={mutation.isLoading}
+                loading={email ? mutation.isLoading : false} // Only show loading if email exists
                 type="submit"
                 mt="lg"
                 px="2xl"
-                onClick={() => mutation.mutate()}
+                onClick={() => {
+                  if (email) {
+                    mutation.mutate() // Create workspace if email exists
+                  } else {
+                    router.push('/register') // Go to register page if no email
+                  }
+                }}
               >
-                {mutation.isLoading ? '' : 'Create Workspace'}
+                {email
+                  ? mutation.isLoading
+                    ? ''
+                    : 'Create Workspace'
+                  : 'Register'}
               </Button>
             </Stack>
           </Stack>
