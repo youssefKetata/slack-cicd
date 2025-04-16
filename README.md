@@ -418,11 +418,11 @@ There are many, many improvements that need to be made in order to make this a p
 
 - The pipeline takes far too long to run. Work should be done to take it down to five minutes at most.
 
-## Collaborators
+<!-- ## Collaborators -->
 
-<a href="https://https://github.com/EdamH/MERN-SLACK-CLONE-CICD-DOCKER-SWARM/graphs/contributors">
+<!-- <a href="https://https://github.com/EdamH/MERN-SLACK-CLONE-CICD-DOCKER-SWARM/graphs/contributors">
     <img src="https://contrib.rocks/image?repo=EdamH/MERN-SLACK-CLONE-CICD-DOCKER-SWARM" />
-  
-</a>
+
+</a> -->
 
 # Feel free to contribute!
