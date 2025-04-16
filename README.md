@@ -4,7 +4,8 @@
 
 CI/CD pipelines allow for a fast response to business needs, while other DevOps practices support stable, secure and predictable services, striking the perfect balance between stability and the speed of change.
 
-This is a project by Edam Hamza & Skander Chayoukhi realized for their end-of-year project at the Higher School of Communications at Tunis (SUP'COM).
+<!--
+This is a project by Edam Hamza & Skander Chayoukhi realized for their end-of-year project at the Higher School of Communications at Tunis (SUP'COM). -->
 
 It creates a Jenkins CI/CD pipeline for a MERN-stack application, with **development**, **staging** and **production** environments, tests and monitoring.
 
@@ -39,7 +40,7 @@ The application placeholder was bootstrapped with [Create Next App](https://gith
 
 #### Brief Description
 
-Our solution combines different features from known collaboration platforms, notably **Microsoft Teams**, **Slack** & **Discord** in a web-based platform that is tailored to the specific need of our community at SUP'COM. There are a more in-depth description of the application and the way its features work in the [supspace-client-ReadmeFile](https://gitlab.com/supspace/supspace-collaboration-platform/-/blob/main/supspace-client/README.md?ref_type=heads)
+<!-- Our solution combines different features from known collaboration platforms, notably **Microsoft Teams**, **Slack** & **Discord** in a web-based platform that is tailored to the specific need of our community at SUP'COM. There are a more in-depth description of the application and the way its features work in the [supspace-client-ReadmeFile](https://gitlab.com/supspace/supspace-collaboration-platform/-/blob/main/supspace-client/README.md?ref_type=heads) -->
 
 ![Brief look at the application](./img/workspace-if.png)
 
