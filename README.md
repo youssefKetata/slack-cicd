@@ -40,7 +40,7 @@ The application placeholder was bootstrapped with [Create Next App](https://gith
 
 #### Brief Description
 
-<!-- Our solution combines different features from known collaboration platforms, notably **Microsoft Teams**, **Slack** & **Discord** in a web-based platform that is tailored to the specific need of our community at SUP'COM. There are a more in-depth description of the application and the way its features work in the [supspace-client-ReadmeFile](https://gitlab.com/supspace/supspace-collaboration-platform/-/blob/main/supspace-client/README.md?ref_type=heads) -->
+<!-- Our solution combines different features from known collaboration platforms, notably **Microsoft Teams**, **Slack** & **Discord** in a web-based platform that is tailored to the specific need of our community at SUP'COM. There are a more in-depth description of the application and the way its features work in the [enetspace-client-ReadmeFile](https://gitlab.com/enetspace/enetspace-collaboration-platform/-/blob/main/enetspace-client/README.md?ref_type=heads) -->
 
 ![Brief look at the application](./img/workspace-if.png)
 
@@ -91,9 +91,9 @@ This project has the following file structure:
 ```
 +- env-dev                <--- Docker-Compose files & Docker Volumes
 |
-+- supspace-cleint        <--- Frontend files (Next / JavaScript)
++- enetspace-cleint        <--- Frontend files (Next / JavaScript)
 |
-+- supspace-api           <--- Frontend files (Express / JavaScript)
++- enetspace-api           <--- Frontend files (Express / JavaScript)
 |
 +- ops                    <--- DevOps IaaC, including pipeline and integration tests
 |
@@ -149,11 +149,11 @@ Create a local development environment using `docker-compose -f ./env-dev/docker
 
 These folders on your computer will be mapped to frontend and backend server foldders:
 
-| Folder on your computer  | Server (container) | Folder on server   |
-| ------------------------ | ------------------ | ------------------ |
-| ./supspace-client/src    | Frontend           | /app/client/src    |
-| ./supspace-client/public | Frontend           | /app/client/public |
-| ./supspace-api/src       | Backend            | /app/server/src    |
+| Folder on your computer   | Server (container) | Folder on server   |
+| ------------------------- | ------------------ | ------------------ |
+| ./enetspace-client/src    | Frontend           | /app/client/src    |
+| ./enetspace-client/public | Frontend           | /app/client/public |
+| ./enetspace-api/src       | Backend            | /app/server/src    |
 
 **Note:** when Jenkins builds and deploys the dev environment, within the pipeline, the code is copied to the container (not mapped).
 
@@ -171,10 +171,10 @@ The development, staging and production secrets will live in Jenkins Credentials
 
 ```bash
 SRV_PORT=8080
-MONGO_URI=prod_mongodb://mongo:supspace1@localhost:27017/
+MONGO_URI=prod_mongodb://mongo:enetspace1@localhost:27017/
 MONGO_PORT=27017
 MONGO_INITDB_ROOT_USERNAME=mongo
-MONGO_INITDB_ROOT_PASSWORD=supspace-1
+MONGO_INITDB_ROOT_PASSWORD=enetspace-1
 NODE_ENV=production
 GIT_COMMIT=install
 ```
@@ -235,7 +235,7 @@ Finally, check the _Restart Jenkins when installation is complete and no jobs ar
 
 Go to your preferred platform and create a repository. Call it `mern_app` and hit the _Create Repository_ button.
 
-To use the pipeline you need to clone the Gogs `mern_app` repository created above into a folder in your computer that must reside outside the folder where you cloned this [supspace-collaboration-platform](https://gitlab.com/supspace/supspace-collaboration-platform.git) project.
+To use the pipeline you need to clone the Gogs `mern_app` repository created above into a folder in your computer that must reside outside the folder where you cloned this [enetspace-collaboration-platform](https://gitlab.com/enetspace/enetspace-collaboration-platform.git) project.
 
 ```bash
 cd ..
@@ -244,7 +244,7 @@ git clone http://path/to/your/repo
 cd mern_app
 ```
 
-Copy the contents of the [supspace-collaboration-platform](https://gitlab.com/supspace/supspace-collaboration-platform.git) to the _mern_app_ folder you created above, but **be carefull not to copy the hidden .git folder** (if you copy from a local clone of this repo).
+Copy the contents of the [enetspace-collaboration-platform](https://gitlab.com/enetspace/enetspace-collaboration-platform.git) to the _mern_app_ folder you created above, but **be carefull not to copy the hidden .git folder** (if you copy from a local clone of this repo).
 
 ### Step 6 - Configure the pipeline
 
@@ -338,12 +338,12 @@ To create the application telemetry dashboard, click on '+' sign on the left sid
 
 Repeat for the remaining metrics.
 
-| Función                                        | PromQL query                                                                  |
-| ---------------------------------------------- | ----------------------------------------------------------------------------- |
-| Number of times the app page was seen          | MERN_APP_web_app_calls{instance="supspace-api:4000",job="MERN_APP"}           |
-| Number of server/DB conections errors          | MERN_APP_db_connection_failures{instance="supspace-api:4000",job="MERN_APP"}  |
-| Number of successfull server/DB conections     | MERN_APP_db_connection_successes{instance="supspace-api:4000",job="MERN_APP"} |
-| Number of times Prometheus scraped app metrics | MERN_APP_metrics_read_total{instance="supspace-api:4000",job="MERN_APP"}      |
+| Función                                        | PromQL query                                                                   |
+| ---------------------------------------------- | ------------------------------------------------------------------------------ |
+| Number of times the app page was seen          | MERN_APP_web_app_calls{instance="enetspace-api:4000",job="MERN_APP"}           |
+| Number of server/DB conections errors          | MERN_APP_db_connection_failures{instance="enetspace-api:4000",job="MERN_APP"}  |
+| Number of successfull server/DB conections     | MERN_APP_db_connection_successes{instance="enetspace-api:4000",job="MERN_APP"} |
+| Number of times Prometheus scraped app metrics | MERN_APP_metrics_read_total{instance="enetspace-api:4000",job="MERN_APP"}      |
 
 #### Container monitoring
 
