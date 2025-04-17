@@ -1,5 +1,14 @@
 pipeline {
-    agent any
+    agent {
+        // Use a Docker agent that includes Docker CLI and Compose v2
+        docker {
+            image 'docker:latest' // This image contains docker CLI and compose plugin
+            // Mount the host's Docker socket into the agent container
+            args '-v /var/run/docker.sock:/var/run/docker.sock' 
+            // Ensure the user inside the container can access the socket (might be needed depending on host setup)
+            // args '-v /var/run/docker.sock:/var/run/docker.sock -u root' 
+        }
+    }
 
     environment {
         DOCKER_CREDS = credentials('docker-hub-creds')
@@ -11,9 +20,17 @@ pipeline {
                 echo "Branch: ${GIT_BRANCH}    Commit: ${GIT_COMMIT}"
                 echo "Jenkins node: ${NODE_NAME}    Build tag: ${BUILD_TAG}"
                 echo "Jenkins workspace: ${WORKSPACE}"
+                
+                // Debugging steps: Check docker command availability and version
+                sh 'echo "--- Checking Docker Info ---"'
+                sh 'which docker'
+                sh 'docker --version'
+                sh 'docker compose version' 
+                sh 'echo "--- End Checking Docker Info ---"'
+
                 dir("./env-dev") {
                     // Build and start dev
-                    sh 'docker-compose -f docker-compose.dev.yml up -d --build'
+                    sh 'docker compose -f docker-compose.dev.yml up -d --build' // Use 'docker compose'
                 }
             }
         }
@@ -25,7 +42,7 @@ pipeline {
             post { // clean-up dev
                 always {
                     dir("./env-dev") {
-                        sh 'docker-compose -f docker-compose.dev.yml down'
+                        sh 'docker compose -f docker-compose.dev.yml down'
                         sh 'docker rmi supspace-client'
                         sh 'docker rmi supspace-api'
                     }
@@ -35,7 +52,7 @@ pipeline {
         stage('Build and run staging') {
             steps {
                 dir("./env-dev") {
-                    sh 'docker-compose -f docker-compose.staging.yml up -d --build'
+                    sh 'docker compose -f docker-compose.staging.yml up -d --build'
                     // sh 'sleep 120' // wait for DB to be ready (to be replaced with container status check)
                 }
             }
@@ -51,7 +68,7 @@ pipeline {
                 always {
                     // Stop staging environment 
                     dir("./env-dev") {
-                        sh 'docker-compose -f docker-compose.staging.yml down'
+                        sh 'docker compose -f docker-compose.staging.yml down'
                     }
                 }
                 failure {
