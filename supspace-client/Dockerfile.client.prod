@@ -11,21 +11,13 @@ RUN npm install --legacy-peer-deps
 # copy project files 
 # make sure to set up .dockerignore to copy only necessary files
 COPY . .
+
+# Set environment variables for the build - use relative or domain URLs
+ENV NEXT_PUBLIC_API=/api/v1
+# ENV NEXT_PUBLIC_SOCKET=/socket.io
+ENV NEXT_PUBLIC_SOCKET=/
+
 # run the build command which will build and export html files
 RUN npm run build
 
 CMD ["npm", "start"]
-
-# # bundle static assets with nginx
-# FROM nginx:1.21.0-alpine as production
-# ENV NODE_ENV production
-# # remove existing files from nginx directory
-# RUN rm -rf /usr/share/nginx/html/*
-# # copy built assets from 'builder' stage
-# COPY --from=builder /usr/src/next-nginx/.next /usr/share/nginx/html
-# # add nginx config
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
-# # expose port 80 for nginx
-# EXPOSE 80
-# # start nginx
-# CMD ["nginx", "-g", "daemon off;"]
