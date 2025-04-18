@@ -59,26 +59,13 @@ pipeline {
         }
         stage('Integration tests') {
             steps {
-                // Debugging steps: Verify path and file existence
-                sh 'echo "--- Debugging Integration Test ---"'
-                sh 'pwd'
-                sh 'ls -la ops/tests/'
-                sh 'echo "--- Checking bash path ---"'
-                sh 'which bash' // Verify bash exists and get its path
-                sh 'ls -l /bin/bash' // Check /bin/bash directly
-                sh 'echo "--- Checking file line endings (look for ^M) ---"'
-                sh 'cat -e ./ops/tests/integration.sh' // Show line endings ($) and carriage returns (^M)
-                sh 'echo "--- End Debugging ---"'
-
-                // Set script permissions inside the Docker container
+                // Confirm file exists and has execute permissions
+                sh 'ls -la ops/tests/integration.sh'
                 sh 'chmod +x ./ops/tests/integration.sh'
 
                 // Try executing with bash explicitly
                 sh 'echo "--- Attempting execution with explicit bash ---"'
-                sh 'bash ./ops/tests/integration.sh'
-
-                // Original execution attempt (keep for comparison if the above works)
-                // sh './ops/tests/integration.sh'
+                sh 'bash ./ops/tests/integration.sh' // Focus on this execution method
             }
             post {
                 always {
