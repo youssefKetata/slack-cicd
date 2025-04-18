@@ -63,9 +63,9 @@ pipeline {
                 sh 'ls -la ops/tests/integration.sh'
                 sh 'chmod +x ./ops/tests/integration.sh'
 
-                // Try executing with bash explicitly
-                sh 'echo "--- Attempting execution with explicit bash ---"'
-                sh 'bash ./ops/tests/integration.sh' // Focus on this execution method
+                // Try executing with sh explicitly
+                sh 'echo "--- Attempting execution with explicit sh ---"'
+                sh 'sh ./ops/tests/integration.sh' // Changed from bash to sh
             }
             post {
                 always {
