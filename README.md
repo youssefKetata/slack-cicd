@@ -167,7 +167,7 @@ The associated volumes are automatically created by docker-compose. However, som
 
 ### Step 2 - Create a production bootstrap variables file
 
-The development, staging and production secrets will live in Jenkins Credentials, but to start the production stack for the first time we'll create a file called `.env_prod` in the ./script folder, with the following contents:
+The development, staging and production secrets will live in Jenkins Credentials, but to start the production stack for the first time we'll create a file called `.env.prod` in the ./script folder, with the following contents:
 
 ```bash
 SRV_PORT=8080

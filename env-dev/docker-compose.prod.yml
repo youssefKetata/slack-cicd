@@ -1,10 +1,10 @@
 version: '3.1'
 
 services:
-  supspace-client:
+  enetspace-client:
     image: youssef37/enetspace-client:latest
     deploy:
-      replicas: 3
+      replicas: 1
       update_config:
         parallelism: 1
         delay: 10s
@@ -13,37 +13,38 @@ services:
   nginx:
     image: youssef37/enetspace-nginx:latest
     deploy:
-      replicas: 3
+      replicas: 1
       update_config:
         parallelism: 1
         delay: 10s
     ports:
       - '80:80'
     depends_on:
-      - supspace-client
+      - enetspace-client
 
-  supspace-api:
+  enetspace-api:
     image: youssef37/enetspace-api:latest
     deploy:
-      replicas: 3
+      replicas: 1
       update_config:
         parallelism: 1
         delay: 10s
     ports:
       - '8090:8080'
     environment:
-      MONGODB_URI: mongodb://mongo:supspace1@mongodb:27017/
-      MONGODB_DB_NAME: supspace-api-prod
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_EXPIRE: ${JWT_EXPIRE}
-      SMTP_USERNAME: ${SMTP_USERNAME}
-      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      MONGODB_URI: mongodb://mongo:enetspace1@mongodb:27017/
+      MONGODB_DB_NAME: enetspace-api-prod
+      JWT_SECRET: you1234
+      JWT_EXPIRE: 30d
+      SMTP_USERNAME: youssefketata76@gmail.com
+      SMTP_PASSWORD: geni zljp lkzo pyit
       NODE_ENV: production
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      CLIENT_URL: http://supspace-client:3000
-      API_URL: http://localhost:8090/api/v1
-    command: node dist/index.js
+      GOOGLE_CLIENT_ID: 590217150651-7jtt7g1arqfkki3164qfroagjk7d9lbv.apps.googleusercontent.com
+      GOOGLE_CLIENT_SECRET: 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
+      # CLIENT_URL: http://supspace-client:3000
+      CLIENT_URL: http://localhost:80
+      API_URL: http://nginx:80/api/v1
+    # command: node dist/index.js
 
   mongodb:
     image: mongo:4.4.17-focal
@@ -54,8 +55,8 @@ services:
         delay: 10s
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongo
-      MONGO_INITDB_ROOT_PASSWORD: supspace1
-      MONGO_URI: mongodb://mongo:supspace1@localhost:27017/
+      MONGO_INITDB_ROOT_PASSWORD: enetspace1
+      MONGO_URI: mongodb://mongo:enetspace1@localhost:27017/
     volumes:
       - db_prod:/data/db
 

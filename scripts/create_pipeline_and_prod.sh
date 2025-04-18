@@ -8,7 +8,7 @@
 #####################################################
 
 # Load production environment variables on this host, for stack startup and docker login
-export $(grep -v '^#' ./.env_prod | xargs)
+export $(grep -v '^#' ./.env.prod | xargs)
 
 # Log in to Docker Hub or your Docker registry
 echo \$DOCKER_CREDS_PSW | docker login -u \$DOCKER_CREDS_USR --password-stdin
@@ -35,17 +35,17 @@ docker-compose -f ../env-dev/docker-compose.staging.yml build
 # docker pull mongo
 
 # Push images to registry
-docker image tag supspace-client edamh158/supspace-client:latest
-docker image tag supspace-api edamh158/supspace-api:latest
-docker image tag env-dev-nginx edamh158/supspace-nginx:latest
-docker push edamh158/supspace-api:latest
-docker push edamh158/supspace-client:latest
-docker push edamh158/supspace-nginx:latest
+docker image tag supspace-client youssef37/supspace-client:latest
+docker image tag supspace-api youssef37/supspace-api:latest
+docker image tag env-dev-nginx youssef37/supspace-nginx:latest
+docker push youssef37/supspace-api:latest
+docker push youssef37/supspace-client:latest
+docker push youssef37/supspace-nginx:latest
 
 # Clean up local images
-docker rmi edamh158/supspace-client
-docker rmi edamh158/supspace-api
-docker rmi edamh158/supspace-nginx:latest
+docker rmi youssef37/supspace-client
+docker rmi youssef37/supspace-api
+docker rmi youssef37/supspace-nginx:latest
 docker rmi supspace-client
 docker rmi supspace-api
 docker rmi mongo

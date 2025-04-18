@@ -52,20 +52,46 @@ pipeline {
         stage('Build and run staging') {
             steps {
                 dir("./env-dev") {
-                    sh 'docker compose -f docker-compose.staging.yml up -d --build'
-                    // sh 'sleep 120' // wait for DB to be ready (to be replaced with container status check)
+                    // Write .env.staging from Jenkins environment variables
+                    sh '''
+                    cat > .env.staging <<EOF
+                    MONGO_INITDB_ROOT_USERNAME=$MONGO_INITDB_ROOT_USERNAME
+                    MONGO_INITDB_ROOT_PASSWORD=$MONGO_INITDB_ROOT_PASSWORD
+                    JWT_SECRET=$JWT_SECRET
+                    JWT_EXPIRE=$JWT_EXPIRE
+                    SMTP_USERNAME=$SMTP_USERNAME
+                    SMTP_PASSWORD=$SMTP_PASSWORD
+                    GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
+                    GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
+                    EOF
+                    '''
+                    sh 'docker compose -f docker-compose.staging.yml --env-file .env.staging up -d --build'
                 }
             }
         }
         stage('Integration tests') {
             steps {
+                // Add delay to allow services to potentially stabilize
+                sh 'echo "Waiting a bit for services to start..."'
+                sh 'sleep 15' // Wait 15 seconds
+
+                // Check API logs using docker compose logs within the correct directory
+                dir("./env-dev") {
+                    sh 'echo "--- Listing files in env-dev ---"'
+                    sh 'ls -la' // Add this line to list files
+                    sh 'echo "--- Checking enetspace-api logs ---"'
+                    // Use docker compose logs <service_name>
+                    sh 'docker compose -f docker-compose.staging.yml logs enetspace-api'
+                    sh 'echo "--- End API logs ---"'
+                }
+
                 // Confirm file exists and has execute permissions
                 sh 'ls -la ops/tests/integration.sh'
                 sh 'chmod +x ./ops/tests/integration.sh'
 
                 // Try executing with sh explicitly
                 sh 'echo "--- Attempting execution with explicit sh ---"'
-                sh 'sh ./ops/tests/integration.sh' // Changed from bash to sh
+                sh 'sh ./ops/tests/integration.sh'
             }
             post {
                 always {

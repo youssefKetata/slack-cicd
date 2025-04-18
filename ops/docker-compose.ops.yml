@@ -1,17 +1,15 @@
 version: '3.1'
 
 services:
-  
   jenkins:
-    build:
-      context: .
-      dockerfile: ./Dockerfiles/Dockerfile.jenkins
+    build: . # Build the Dockerfile in the current directory (ops)
+    container_name: jenkins # Optional: keep the name consistent
     ports:
-      - "8000:8080"
-      - "50000:50000"
+      - '8000:8080'
+      - '50000:50000'
     volumes:
       - jenkins:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock # Share the host  docker socket with the container
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - ops_overlay_network
       - default
@@ -19,8 +17,8 @@ services:
   prometheus:
     image: prom/prometheus:v2.20.1
     volumes:
-      - ./etc/prometheus/:/etc/prometheus/
-      - ./var/prometheus/prometheus_data:/prometheus
+      - prometheus_data:/prometheus
+      - ./etc/prometheus:/etc/prometheus # Simplified path
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -28,38 +26,28 @@ services:
       - '--web.console.templates=/usr/share/prometheus/consoles'
     ports:
       - 9090:9090
-    depends_on:
-      - cadvisor
     networks:
       - ops_overlay_network
       - default
-  
+
   grafana:
     image: grafana/grafana
     ports:
       - 7070:3000
     volumes:
-      - ./var/grafana/grafana_data:/var/lib/grafana
-      - ./etc/grafana/provisioning/:/etc/grafana/provisioning/
+      - grafana_data:/var/lib/grafana
+      - ./etc/grafana/provisioning:/etc/grafana/provisioning # Simplified path
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=grafanasecret
       - GF_USERS_ALLOW_SIGN_UP=false
     networks:
       - ops_overlay_network
       - default
-   
-  cadvisor:
-    image: google/cadvisor
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:rw
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-    ports:
-      - 5050:8080
 
 volumes:
-  jenkins: {}
+  jenkins:
+  prometheus_data:
+  grafana_data:
 networks:
   ops_overlay_network:
     external: true
