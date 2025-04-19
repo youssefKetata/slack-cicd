@@ -2,20 +2,20 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
   external_labels:
-    monitor: "my-project"
+    monitor: 'my-project'
 
 scrape_configs:
-  - job_name: "MERN_APP"
+  - job_name: 'MERN_APP'
     scrape_interval: 5s
     static_configs:
-      - targets: ["prod_supspace-api:8080"]
+      - targets: ['prod_enetspace-api:8080']
 
-  - job_name: "prometheus"
+  - job_name: 'prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: ["prometheus:9090"]
+      - targets: ['prometheus:9090']
 
-  - job_name: "cadvisor"
+  - job_name: 'cadvisor'
     scrape_interval: 5s
     static_configs:
-      - targets: ["cadvisor:8080"]
+      - targets: ['cadvisor:8080']
