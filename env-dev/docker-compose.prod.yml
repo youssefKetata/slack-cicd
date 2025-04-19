@@ -32,15 +32,15 @@ services:
     ports:
       - '8090:8080'
     environment:
-      MONGODB_URI: mongodb://mongo:enetspace1@mongodb:27017/
+      MONGODB_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/
       MONGODB_DB_NAME: enetspace-api-prod
-      JWT_SECRET: you1234
-      JWT_EXPIRE: 30d
-      SMTP_USERNAME: youssefketata76@gmail.com
-      SMTP_PASSWORD: geni zljp lkzo pyit
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRE: ${JWT_EXPIRE}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
       NODE_ENV: production
-      GOOGLE_CLIENT_ID: 590217150651-7jtt7g1arqfkki3164qfroagjk7d9lbv.apps.googleusercontent.com
-      GOOGLE_CLIENT_SECRET: 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
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       # CLIENT_URL: http://supspace-client:3000
       CLIENT_URL: http://localhost:80
       API_URL: http://nginx:80/api/v1
@@ -54,9 +54,9 @@ services:
         parallelism: 1
         delay: 10s
     environment:
-      MONGO_INITDB_ROOT_USERNAME: mongo
-      MONGO_INITDB_ROOT_PASSWORD: enetspace1
-      MONGO_URI: mongodb://mongo:enetspace1@localhost:27017/
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@localhost:27017/
     volumes:
       - db_prod:/data/db
 

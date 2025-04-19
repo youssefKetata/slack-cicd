@@ -12,7 +12,16 @@ pipeline {
 
     environment {
         DOCKER_CREDS = credentials('docker-hub-creds')
+        MONGO_INITDB_ROOT_USERNAME = credentials('mongo-root-username-id') 
+        MONGO_INITDB_ROOT_PASSWORD = credentials('mongo-root-password-id') 
+        JWT_SECRET = credentials('jwt-secret-id')       
+        JWT_EXPIRE = credentials('jwt-expire-id')       
+        SMTP_USERNAME = credentials('smtp-username-id')         
+        SMTP_PASSWORD = credentials('smtp-password-id')         
+        GOOGLE_ID = credentials('google-client-id-id')      
+        GOOGLE_SECRET = credentials('google-client-secret-id') 
     }
+    
 
     stages {
         stage('Build and run dev') {
@@ -37,14 +46,14 @@ pipeline {
         stage('Unit tests') {
             steps {
                 // run Jest tests
-                sh 'docker exec supspace-client npm test'
+                sh 'docker exec enetspace-client npm test'
             }
             post { // clean-up dev
                 always {
                     dir("./env-dev") {
                         sh 'docker compose -f docker-compose.dev.yml down'
-                        sh 'docker rmi supspace-client'
-                        sh 'docker rmi supspace-api'
+                        sh 'docker rmi enetspace-client'
+                        sh 'docker rmi enetspace-api'
                     }
                 }
             }
@@ -52,37 +61,34 @@ pipeline {
         stage('Build and run staging') {
             steps {
                 dir("./env-dev") {
-                    // Write .env.staging from Jenkins environment variables
-                    sh '''
+                    // Write .env.staging from Jenkins environment variables (populated by credentials)
+                    sh '''#!/bin/sh
+                    # Use Jenkins-provided environment variables
                     cat > .env.staging <<EOF
-                    MONGO_INITDB_ROOT_USERNAME=$MONGO_INITDB_ROOT_USERNAME
-                    MONGO_INITDB_ROOT_PASSWORD=$MONGO_INITDB_ROOT_PASSWORD
-                    JWT_SECRET=$JWT_SECRET
-                    JWT_EXPIRE=$JWT_EXPIRE
-                    SMTP_USERNAME=$SMTP_USERNAME
-                    SMTP_PASSWORD=$SMTP_PASSWORD
-                    GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
-                    GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
+                    MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+                    MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS}
+                    JWT_SECRET=${JWT_SECRET_VAL}
+                    JWT_EXPIRE=${JWT_EXPIRE_VAL}
+                    SMTP_USERNAME=${SMTP_USER}
+                    SMTP_PASSWORD=${SMTP_PASS}
+                    GOOGLE_CLIENT_ID=${GOOGLE_ID}
+                    GOOGLE_CLIENT_SECRET=${GOOGLE_SECRET}
                     EOF
                     '''
+                    // Use the generated .env.staging file
                     sh 'docker compose -f docker-compose.staging.yml --env-file .env.staging up -d --build'
                 }
             }
         }
         stage('Integration tests') {
             steps {
-                // Add delay to allow services to potentially stabilize
-                sh 'echo "Waiting a bit for services to start..."'
-                sh 'sleep 15' // Wait 15 seconds
+
 
                 // Check API logs using docker compose logs within the correct directory
                 dir("./env-dev") {
-                    sh 'echo "--- Listing files in env-dev ---"'
-                    sh 'ls -la' // Add this line to list files
-                    sh 'echo "--- Checking enetspace-api logs ---"'
-                    // Use docker compose logs <service_name>
+                    sh 'docker compose -f docker-compose.staging.yml ps'
                     sh 'docker compose -f docker-compose.staging.yml logs enetspace-api'
-                    sh 'echo "--- End API logs ---"'
+                    sh 'docker compose -f docker-compose.staging.yml logs nginx'
                 }
 
                 // Confirm file exists and has execute permissions
@@ -102,34 +108,39 @@ pipeline {
                 }
                 failure {
                     // // If tests fail, remove failed staging images
-                    sh 'docker rmi supspace-client'
-                    sh 'docker rmi supspace-api'
+                    sh 'docker rmi enetspace-client'
+                    sh 'docker rmi enetspace-api'
                 }
             }
         }
         stage('Push images to Registry') {
             steps {
                 // tag images
-                sh "docker image tag supspace-client edamh158/supspace-client:${GIT_COMMIT}"
-                sh "docker image tag supspace-api edamh158/supspace-api:${GIT_COMMIT}"
-                sh "docker image tag nginx:alpine edamh158/supspace-nginx:${GIT_COMMIT}"
+                sh "docker image tag enetspace-client youssef37/enetspace-client:${GIT_COMMIT}"
+                sh "docker image tag enetspace-api youssef37/enetspace-api:${GIT_COMMIT}"
+                sh "docker image tag env-dev-nginx youssef37/enetspace-nginx:${GIT_COMMIT}"
                 // Login to Docker Hub
                 sh "echo \$DOCKER_CREDS_PSW | docker login -u \$DOCKER_CREDS_USR --password-stdin"
                 // push images
-                sh "docker push edamh158/supspace-client:${GIT_COMMIT}"
-                sh "docker push edamh158/supspace-api:${GIT_COMMIT}"
-                sh "docker push edamh158/supspace-nginx:${GIT_COMMIT}"
+                sh "docker push youssef37/enetspace-client:${GIT_COMMIT}"
+                sh "docker push youssef37/enetspace-api:${GIT_COMMIT}"
+                sh "docker push youssef37/enetspace-nginx:${GIT_COMMIT}"
             }
             post {
                 always {
-                    // remove local images
-                    sh "docker rmi edamh158/supspace-client:${GIT_COMMIT}"
-                    sh "docker rmi edamh158/supspace-api:${GIT_COMMIT}"
-                    sh "docker rmi edamh158/supspace-nginx:${GIT_COMMIT}"
-                    sh "docker rmi supspace-client"
-                    sh "docker rmi supspace-api"
-                    sh "docker rmi mongo:4.4.17-focal"
-                    sh "docker rmi nginx:alpine"
+                    // remove local images tagged with the commit hash
+                    sh "docker rmi youssef37/enetspace-client:${GIT_COMMIT}"
+                    sh "docker rmi youssef37/enetspace-api:${GIT_COMMIT}"
+                    sh "docker rmi youssef37/enetspace-nginx:${GIT_COMMIT}"
+                    
+                    // Comment out removal of build images to avoid conflicts
+                    // sh "docker rmi enetspace-client"
+                    // sh "docker rmi enetspace-api"
+                    // sh "docker rmi env-dev-nginx"
+                    
+                    // Comment out or remove attempts to delete base images
+                    // sh "docker rmi mongo:4.4.17-focal" 
+                    // sh "docker rmi nginx:alpine"
                 }
             }
         }
@@ -141,9 +152,9 @@ pipeline {
                 dir("./env-dev") {
                     sh "echo \$DOCKER_CREDS_PSW | docker login -u \$DOCKER_CREDS_USR --password-stdin"
                      // Rolling update to production (waits for update to finish)
-                    sh 'docker service update --image edamh158/supspace-client:${GIT_COMMIT} prod_supspace-client'
-                    sh 'docker service update --image edamh158/supspace-api:${GIT_COMMIT} prod_supspace-api'
-                    sh 'docker service update --image edamh158/supspace-nginx:${GIT_COMMIT} prod_nginx'
+                    sh 'docker service update --image youssef37/enetspace-client:${GIT_COMMIT} prod_enetspace-client'
+                    sh 'docker service update --image youssef37/enetspace-api:${GIT_COMMIT} prod_enetspace-api'
+                    sh 'docker service update --image youssef37/enetspace-nginx:${GIT_COMMIT} prod_nginx'
                 }
             }
         }
@@ -152,13 +163,26 @@ pipeline {
                 branch 'main'
             }
             steps {
-                sh "curl 'http://prod_nginx:80'"
+                // Install curl within the docker agent
+                sh 'apk update && apk add curl' 
+                
+                sh 'echo "Waiting a few seconds before smoke test..."'
+                sh 'sleep 10' 
+
+                // --- !!! IMPORTANT !!! ---
+                // Replace YOUR_SWARM_NODE_PUBLIC_IP with the actual IP address
+                // Replace 80 if your service publishes a different external port
+                sh "curl --fail --silent --show-error 'http://host.docker.internal:80'" 
             }
             post {
                 failure {
-                    sh "docker service rollback prod_supspace-client"
-                    sh "docker service rollback prod_supspace-api"
+                    echo "Smoke test failed! Rolling back services."
+                    sh "docker service rollback prod_enetspace-client"
+                    sh "docker service rollback prod_enetspace-api"
                     sh "docker service rollback prod_nginx"
+                }
+                success {
+                    echo "Smoke test passed. Deployment successful."
                 }
             }
         }
