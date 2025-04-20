@@ -35,19 +35,19 @@ docker-compose -f ../env-dev/docker-compose.staging.yml build
 # docker pull mongo
 
 # Push images to registry
-docker image tag supspace-client youssef37/supspace-client:latest
-docker image tag supspace-api youssef37/supspace-api:latest
-docker image tag env-dev-nginx youssef37/supspace-nginx:latest
-docker push youssef37/supspace-api:latest
-docker push youssef37/supspace-client:latest
-docker push youssef37/supspace-nginx:latest
+docker image tag enetspace-client youssef37/enetspace-client:latest
+docker image tag enetspace-api youssef37/enetspace-api:latest
+docker image tag env-dev-nginx youssef37/enetspace-nginx:latest
+docker push youssef37/enetspace-api:latest
+docker push youssef37/enetspace-client:latest
+docker push youssef37/enetspace-nginx:latest
 
 # Clean up local images
-docker rmi youssef37/supspace-client
-docker rmi youssef37/supspace-api
-docker rmi youssef37/supspace-nginx:latest
-docker rmi supspace-client
-docker rmi supspace-api
+docker rmi youssef37/enetspace-client
+docker rmi youssef37/enetspace-api
+docker rmi youssef37/enetspace-nginx:latest
+docker rmi enetspace-client
+docker rmi enetspace-api
 docker rmi mongo
 docker rmi env-dev-nginx
 
@@ -55,8 +55,8 @@ docker rmi env-dev-nginx
 docker stack deploy --compose-file ../env-dev/docker-compose.prod.yml prod
 
 # Add prod_client service to the ops_network, for smoke tests
-docker service update --network-add ops_overlay_network prod_supspace-client
-docker service update --network-add ops_overlay_network prod_supspace-api
+docker service update --network-add ops_overlay_network prod_enetspace-client
+docker service update --network-add ops_overlay_network prod_enetspace-api
 docker service update --network-add ops_overlay_network prod_mongodb
 docker service update --network-add ops_overlay_network prod_nginx
 

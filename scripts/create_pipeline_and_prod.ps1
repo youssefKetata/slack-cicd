@@ -50,8 +50,8 @@ docker push youssef37/enetspace-nginx:latest
 docker rmi youssef37/enetspace-client
 docker rmi youssef37/enetspace-api
 docker rmi youssef37/enetspace-nginx:latest
-docker rmi supspace-client
-docker rmi supspace-api
+docker rmi enetspace-client
+docker rmi enetspace-api
 docker rmi mongo
 docker rmi env-dev-nginx
 
@@ -59,8 +59,8 @@ docker rmi env-dev-nginx
 docker stack deploy --compose-file ..\env-dev\docker-compose.prod.yml prod
 
 # Add prod services to the ops_overlay_network, for smoke tests
-docker service update --network-add ops_overlay_network prod_supspace-client
-docker service update --network-add ops_overlay_network prod_supspace-api
+docker service update --network-add ops_overlay_network prod_enetspace-client
+docker service update --network-add ops_overlay_network prod_enetspace-api
 docker service update --network-add ops_overlay_network prod_mongodb
 docker service update --network-add ops_overlay_network prod_nginx
 

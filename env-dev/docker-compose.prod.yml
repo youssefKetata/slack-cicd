@@ -41,7 +41,7 @@ services:
       NODE_ENV: production
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      # CLIENT_URL: http://supspace-client:3000
+      # CLIENT_URL: http://enetspace-client:3000
       CLIENT_URL: http://localhost:80
       API_URL: http://nginx:80/api/v1
     # command: node dist/index.js

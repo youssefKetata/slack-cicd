@@ -1,5 +1,5 @@
 {
-  "name": "supspace-api",
+  "name": "enetspace-api",
   "version": "1.0.0",
   "description": "an even better version of slack",
   "main": "index.ts",

@@ -4,7 +4,7 @@
     <metrics statements="448" coveredstatements="404" conditionals="16" coveredconditionals="10" methods="19" coveredmethods="7" elements="483" coveredelements="421" complexity="0" loc="448" ncloc="448" packages="3" files="7" classes="7"/>
     <package name="components">
       <metrics statements="103" coveredstatements="103" conditionals="7" coveredconditionals="5" methods="2" coveredmethods="2"/>
-      <file name="TestQueryProvider.tsx" path="C:\Users\User\Desktop\SUPSPACE\supspace-client\components\TestQueryProvider.tsx">
+      <file name="TestQueryProvider.tsx" path="C:\Users\User\Desktop\enetspace\enetspace-client\components\TestQueryProvider.tsx">
         <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -21,7 +21,7 @@
         <line num="13" count="1" type="stmt"/>
         <line num="14" count="1" type="stmt"/>
       </file>
-      <file name="button.tsx" path="C:\Users\User\Desktop\SUPSPACE\supspace-client\components\button.tsx">
+      <file name="button.tsx" path="C:\Users\User\Desktop\enetspace\enetspace-client\components\button.tsx">
         <metrics statements="38" coveredstatements="38" conditionals="4" coveredconditionals="2" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -62,7 +62,7 @@
         <line num="37" count="1" type="stmt"/>
         <line num="38" count="1" type="stmt"/>
       </file>
-      <file name="input.tsx" path="C:\Users\User\Desktop\SUPSPACE\supspace-client\components\input.tsx">
+      <file name="input.tsx" path="C:\Users\User\Desktop\enetspace\enetspace-client\components\input.tsx">
         <metrics statements="30" coveredstatements="30" conditionals="2" coveredconditionals="2" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -95,7 +95,7 @@
         <line num="29" count="1" type="stmt"/>
         <line num="30" count="1" type="stmt"/>
       </file>
-      <file name="slack-logo.tsx" path="C:\Users\User\Desktop\SUPSPACE\supspace-client\components\slack-logo.tsx">
+      <file name="slack-logo.tsx" path="C:\Users\User\Desktop\enetspace\enetspace-client\components\slack-logo.tsx">
         <metrics statements="21" coveredstatements="21" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -122,7 +122,7 @@
     </package>
     <package name="pages">
       <metrics statements="324" coveredstatements="288" conditionals="9" coveredconditionals="5" methods="17" coveredmethods="5"/>
-      <file name="register.tsx" path="C:\Users\User\Desktop\SUPSPACE\supspace-client\pages\register.tsx">
+      <file name="register.tsx" path="C:\Users\User\Desktop\enetspace\enetspace-client\pages\register.tsx">
         <metrics statements="162" coveredstatements="144" conditionals="5" coveredconditionals="3" methods="9" coveredmethods="3"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -287,7 +287,7 @@
         <line num="161" count="1" type="stmt"/>
         <line num="162" count="1" type="stmt"/>
       </file>
-      <file name="signin.tsx" path="C:\Users\User\Desktop\SUPSPACE\supspace-client\pages\signin.tsx">
+      <file name="signin.tsx" path="C:\Users\User\Desktop\enetspace\enetspace-client\pages\signin.tsx">
         <metrics statements="162" coveredstatements="144" conditionals="4" coveredconditionals="2" methods="8" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -455,7 +455,7 @@
     </package>
     <package name="services">
       <metrics statements="21" coveredstatements="13" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="axios.ts" path="C:\Users\User\Desktop\SUPSPACE\supspace-client\services\axios.ts">
+      <file name="axios.ts" path="C:\Users\User\Desktop\enetspace\enetspace-client\services\axios.ts">
         <metrics statements="21" coveredstatements="13" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
