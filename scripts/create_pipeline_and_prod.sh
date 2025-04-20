@@ -7,11 +7,25 @@
 #                                                   #
 #####################################################
 
+# Check if .env.prod exists
+if [ ! -f ./.env.prod ]; then
+  echo "Error: .env.prod file not found!"
+  echo "Please create this file based on .env.prod.example"
+  echo "DO NOT commit this file to git!"
+  exit 1
+fi
+
 # Load production environment variables on this host, for stack startup and docker login
 export $(grep -v '^#' ./.env.prod | xargs)
 
+# Validate required environment variables
+if [ -z "$DOCKER_CREDS_USR" ] || [ -z "$DOCKER_CREDS_PSW" ]; then
+  echo "Error: Docker credentials are missing in .env.prod file"
+  exit 1
+fi
+
 # Log in to Docker Hub or your Docker registry
-echo \$DOCKER_CREDS_PSW | docker login -u \$DOCKER_CREDS_USR --password-stdin
+echo "$DOCKER_CREDS_PSW" | docker login -u "$DOCKER_CREDS_USR" --password-stdin
 
 # Create network
 docker network create -d overlay --attachable ops_overlay_network
@@ -35,17 +49,17 @@ docker-compose -f ../env-dev/docker-compose.staging.yml build
 # docker pull mongo
 
 # Push images to registry
-docker image tag enetspace-client youssef37/enetspace-client:latest
-docker image tag enetspace-api youssef37/enetspace-api:latest
-docker image tag env-dev-nginx youssef37/enetspace-nginx:latest
-docker push youssef37/enetspace-api:latest
-docker push youssef37/enetspace-client:latest
-docker push youssef37/enetspace-nginx:latest
+docker image tag enetspace-client $DOCKER_CREDS_USR/enetspace-client:latest
+docker image tag enetspace-api $DOCKER_CREDS_USR/enetspace-api:latest
+docker image tag env-dev-nginx $DOCKER_CREDS_USR/enetspace-nginx:latest
+docker push $DOCKER_CREDS_USR/enetspace-api:latest
+docker push $DOCKER_CREDS_USR/enetspace-client:latest
+docker push $DOCKER_CREDS_USR/enetspace-nginx:latest
 
 # Clean up local images
-docker rmi youssef37/enetspace-client
-docker rmi youssef37/enetspace-api
-docker rmi youssef37/enetspace-nginx:latest
+docker rmi $DOCKER_CREDS_USR/enetspace-client
+docker rmi $DOCKER_CREDS_USR/enetspace-api
+docker rmi $DOCKER_CREDS_USR/enetspace-nginx:latest
 docker rmi enetspace-client
 docker rmi enetspace-api
 docker rmi mongo
@@ -60,7 +74,7 @@ docker service update --network-add ops_overlay_network prod_enetspace-api
 docker service update --network-add ops_overlay_network prod_mongodb
 docker service update --network-add ops_overlay_network prod_nginx
 
-remove production environment variables from host
+# Remove production environment variables from host
 unset SRV_PORT
 unset MONGO_URI
 unset MONGO_PORT
@@ -70,6 +84,7 @@ unset NODE_ENV
 unset GIT_COMMIT
 unset DOCKER_CREDS_USR
 unset DOCKER_CREDS_PSW
-# Clean intermediate images - be carefull if you have other images that cannot be removed
+
+# Clean intermediate images - be careful if you have other images that cannot be removed
 echo "The next command may take some time (if you confirm)."
 docker image prune

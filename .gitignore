@@ -62,6 +62,14 @@ env-dev/.env.*
 **/.env
 **/.env.local
 
+# Explicitly ignore production environment files
+**/.env.prod
+**/scripts/.env.prod
+**/scripts/.env_prod
+**/.env.production
+# But keep example files
+!**/.env.*.example
+
 # OPS
 ./ops/push.sh
 .DS_Store
