@@ -3,7 +3,7 @@
   <project timestamp="1714495478366" name="All files">
     <metrics statements="448" coveredstatements="404" conditionals="16" coveredconditionals="10" methods="19" coveredmethods="7" elements="483" coveredelements="421" complexity="0" loc="448" ncloc="448" packages="3" files="7" classes="7"/>
     <package name="components">
-      <metrics statements="103" coveredstatements="103" conditionals="7" coveredconditionals="5" methods="2" coveredmethods="2"/>
+      <metrics statements="103" falsecount='true' coveredstatements="103" conditionals="7" coveredconditionals="5" methods="2" coveredmethods="2"/>
       <file name="TestQueryProvider.tsx" path="C:\Users\User\Desktop\enetspace\enetspace-client\components\TestQueryProvider.tsx">
         <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
